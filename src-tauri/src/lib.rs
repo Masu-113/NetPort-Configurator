@@ -12,3 +12,17 @@ pub fn run() {
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
+
+
+#[tauri::command]
+fn prueba(name: &str) -> String {
+    format!("Hola, {}! es la funcion de prueba!", name)
+}
+
+#[cfg_attr(mobile,tauri::mobile_entry_point)]
+pub fn test() {
+    tauri::Builder::default()
+        .invoke_handler(tauri::generate_handler![prueba])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}

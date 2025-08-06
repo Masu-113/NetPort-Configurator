@@ -16,3 +16,14 @@ window.addEventListener("DOMContentLoaded", () => {
     greet();
   });
 });
+
+import invoke from '@tauri-apps/api/tauri';
+
+async function llamarfuncion() {
+  try {
+    const resultado = await invoke('nombre_de_la_funcion', { parametro1: 'valor1' });
+    console.log('Resultado de la función:', resultado);
+  } catch (error) {
+    console.error('Error al llamar a la función:', error);
+  }
+} 
