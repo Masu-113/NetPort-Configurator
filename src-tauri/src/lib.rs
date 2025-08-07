@@ -1,14 +1,15 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-use tauri::{command, AppHandle};
 use std::process::Command;
 
-#[command]
+#[tauri::command]
+#[allow(dead_code)]
+
 fn ejecutar_powershell(port_name: String, ip_address: String, subnet_mask: String, vlan: String) -> Result<String, String> {
     // Comando de PowerShell
     let output = Command::new("powershell.exe")
-        .args(&["-ExecutionPolicy", "Bypass", "-File", "path/to/your/script.ps1", &port_name, &ip_address, &subnet_mask, &vlan])
+        .args(&["-ExecutionPolicy", "Bypass", "-File", r"C:\Users\msuarez\Downloads\Prueba runas\Test_runas.bat", &port_name, &ip_address, &subnet_mask, &vlan])
         .output()
-        .map_err(|e| e.to_string())?;
+        .map_err(|e| e.to_string())?;   
 
     // Verifica si el comando fue exitoso
     if output.status.success() {

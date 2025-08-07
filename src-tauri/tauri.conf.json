@@ -17,15 +17,6 @@
         "resizable": true,
         "fullscreen": false,
         "visible": true
-      },
-      {
-        "title": "Tauri App Splashscreen",
-        "decorations": false,
-        "width": 400,
-        "height": 600,
-        "url": "views/home.html",
-        "label": "splashscreen",
-        "resizable": true
       }
     ],
     "security": {

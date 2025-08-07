@@ -16,7 +16,7 @@ async function ejecutarPowershell() {
   // Comando de PowerShell
   const command = new Command('powershell.exe', [
     '-ExecutionPolicy', 'Bypass',
-    '-File', 'path/to/your/script.ps1', // Cambia esto a la ruta de tu script
+    '-File', 'C:\Users\msuarez\Downloads\Prueba runas\Test_runas.bat', 
     portName, ipAddress, subnetMask, vlan
   ]);
 
@@ -38,6 +38,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
   document.querySelector("#data-form").addEventListener("submit", (e) => {
     e.preventDefault();
-    ejecutarPowershell(); // Llama a la función para ejecutar PowerShell
+    ejecutarPowershell();
   });
 });
+
+invoke(my_custom_comand)
