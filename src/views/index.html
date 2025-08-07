@@ -29,11 +29,14 @@
       </div>
       <p>Click on the Tauri logo to learn more about the framework</p>
 
-      <form class="row" id="greet-form">
-        <input id="greet-input" placeholder="Enter a name..." />
-        <button type="submit">Greet</button>
+      <form class="row" id="data-form">
+        <input id="port-name" placeholder="Nombre del puerto" required />
+        <input id="ip-address" placeholder="IP" required />
+        <input id="subnet-mask" placeholder="Máscara" required />
+        <input id="vlan" placeholder="VLAN" required />
+        <button type="submit">Enviar</button>
       </form>
-      <p id="greet-msg"></p>
+      <p id="response-msg"></p>
     </main>
   </body>
 </html>
