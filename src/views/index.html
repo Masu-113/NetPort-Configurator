@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tauri App</title>
+    <script type="module" src="/main.js" defer></script>
+  </head>
+
+  <body>
+    <main class="container">
+      <h1>Welcome to Tauri</h1>
+
+      <form class="row" id="data-form">
+        <div class="flex-row">
+          <label for="Nombre">Nombre: </label>
+          <input id="port-name" placeholder="Nombre del puerto"/>
+          <label for="Puerto"> Puerto: </label>
+          <input id="ip-address" placeholder="IP"/>
+          <label for="mask">Mask:</label>
+          <input id="subnet-mask" placeholder="Máscara"/>
+          <label for="vlan">Vlan: </label>
+          <input id="vlan" placeholder="VLAN"/>
+          <button type="submit">Enviar</button>
+        </div>
+      </form>
+      <p id="response-msg"></p>
+    </main>
+  </body>
+</html>
