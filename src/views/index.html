@@ -11,20 +11,38 @@
   <body>
     <main class="container">
       <h1>Welcome to Tauri</h1>
-
       <form class="row" id="data-form">
         <div class="flex-row">
           <label for="Nombre">Nombre: </label>
-          <input id="port-name" placeholder="Nombre del puerto"/>
+          <input id="port-name" placeholder="Nombre del puerto" readonly/>
           <label for="Puerto"> Puerto: </label>
-          <input id="ip-address" placeholder="IP"/>
+          <input id="ip-address" placeholder="IP" readonly/>
           <label for="mask">Mask:</label>
-          <input id="subnet-mask" placeholder="Máscara"/>
+          <input id="subnet-mask" placeholder="Máscara" readonly/>
           <label for="vlan">Vlan: </label>
-          <input id="vlan" placeholder="VLAN"/>
-          <button type="submit">Enviar</button>
+          <input id="vlan" placeholder="VLAN" readonly/>
+          <button type="submit">Buscar</button>
         </div>
       </form>
+      <!-- From Uiverse.io by Li-Deheng --> 
+    <div class="loader">
+      <div class="circle">
+        <div class="dot"></div>
+        <div class="outline"></div>
+      </div>
+      <div class="circle">
+        <div class="dot"></div>
+        <div class="outline"></div>
+      </div>
+      <div class="circle">
+        <div class="dot"></div>
+        <div class="outline"></div>
+      </div>
+      <div class="circle">
+        <div class="dot"></div>
+        <div class="outline"></div>
+      </div>
+    </div>
       <p id="response-msg"></p>
     </main>
   </body>
