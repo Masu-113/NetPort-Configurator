@@ -1,22 +1,27 @@
-// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-use std::process::Command;
 
-#[tauri::command]
-#[allow(dead_code)]
+pub async fn ejecutar_powershell() -> Result<String, String> {
+    let script_path = r"C:\Users\msuarez\tauri-app\src-ps1\get_network_info.ps1".to_string();
 
-fn ejecutar_powershell(port_name: String, ip_address: String, subnet_mask: String, vlan: String) -> Result<String, String> {
-    // Comando de PowerShell
-    let output = Command::new("powershell.exe")
-        .args(&["-ExecutionPolicy", "Bypass", "-File", r"C:\Users\msuarez\Downloads\Prueba runas\Test_runas.bat", &port_name, &ip_address, &subnet_mask, &vlan])
-        .output()
-        .map_err(|e| e.to_string())?;   
+    let output = tauri::async_runtime::spawn_blocking(move || {
+        std::process::Command::new("powershell.exe")
+            .args(&["-ExecutionPolicy", "Bypass", "-File", &script_path])
+            .output()
+    })
+    .await
+    .map_err(|e| e.to_string())?
+    .map_err(|e| e.to_string())?;
 
-    // Verifica si el comando fue exitoso
+    println!("RAW stdout: {:?}", output.stdout);
+    println!("RAW stderr: {:?}", output.stderr);
+
     if output.status.success() {
-        let result = String::from_utf8_lossy(&output.stdout);
-        Ok(result.to_string())
+        let s = String::from_utf8_lossy(&output.stdout).to_string();
+        println!("stdout text: {:?}", s);
+        Ok(s.trim().to_string())
     } else {
-        let error = String::from_utf8_lossy(&output.stderr);
-        Err(error.to_string())
+        let s = String::from_utf8_lossy(&output.stderr).to_string();
+        println!("stderr text: {:?}", s);
+        Err(s.trim().to_string())
     }
+    
 }
