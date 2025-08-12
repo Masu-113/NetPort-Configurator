@@ -5,7 +5,7 @@ async fn ejecutar_powershell() -> Result<String, String> {
 
     let output = tauri::async_runtime::spawn_blocking(move || {
         std::process::Command::new("powershell.exe")
-            .args(&["-ExecutionPolicy", "Bypass", "-File", &script_path])
+            .args(&["-WindowStyle","Hidden","-ExecutionPolicy", "Bypass", "-File", &script_path])
             .output()
     })
     .await
@@ -60,7 +60,6 @@ async fn cambiar_vlan(interface_name: String, new_vlan_id: String) -> Result<Str
         Err(s.trim().to_string())
     }
 }
-
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
