@@ -22,11 +22,15 @@ body, html {
 
 /* From Uiverse.io by Li-Deheng */ 
 .loader {
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   --color: hsl(0, 0%, 87%);
   --animation: 2s ease-in-out infinite;
+}
+
+.loader{
+  display: flex;
 }
 
 .loader .circle {
@@ -257,6 +261,31 @@ form#data-form {
   outline: none;
   border-color: #24c8db;
   box-shadow: 0 0 8px #24c8dbaa;
+}
+
+#cambiar-vlan-button {
+  padding: 0.7em 2em; /* Mismo estilo de padding que los otros botones */
+  border-radius: 8px;
+  border: none;
+  background-color: #24c8db; /* Color de fondo */
+  color: white; /* Color del texto */
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgb(36 200 219 / 0.5);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#cambiar-vlan-button:hover,
+#cambiar-vlan-button:focus {
+  background-color: #1ca6bf; /* Color al pasar el mouse */
+  box-shadow: 0 6px 12px rgb(28 166 191 / 0.7);
+  outline: none;
+}
+
+#cambiar-vlan-button:active {
+  background-color: #148296; /* Color al hacer clic */
+  box-shadow: none;
 }
 
 .flex-row button {

@@ -15,34 +15,41 @@
         <div class="flex-row">
           <label for="Nombre">Nombre: </label>
           <input id="port-name" placeholder="Nombre del puerto" readonly/>
+          
           <label for="Puerto"> Puerto: </label>
           <input id="ip-address" placeholder="IP" readonly/>
+          
           <label for="mask">Mask:</label>
           <input id="subnet-mask" placeholder="Máscara" readonly/>
+          
           <label for="vlan">Vlan: </label>
           <input id="vlan" placeholder="VLAN" readonly/>
+          
           <button type="submit">Buscar</button>
         </div>
       </form>
-      <!-- From Uiverse.io by Li-Deheng --> 
-    <div class="loader">
-      <div class="circle">
-        <div class="dot"></div>
-        <div class="outline"></div>
+
+      <button id="cambiar-vlan-button">Cambiar VLAN</button> <!-- Botón para cambiar VLAN -->
+
+      <div class="loader">
+        <div class="circle">
+          <div class="dot"></div>
+          <div class="outline"></div>
+        </div>
+        <div class="circle">
+          <div class="dot"></div>
+          <div class="outline"></div>
+        </div>
+        <div class="circle">
+          <div class="dot"></div>
+          <div class="outline"></div>
+        </div>
+        <div class="circle">
+          <div class="dot"></div>
+          <div class="outline"></div>
+        </div>
       </div>
-      <div class="circle">
-        <div class="dot"></div>
-        <div class="outline"></div>
-      </div>
-      <div class="circle">
-        <div class="dot"></div>
-        <div class="outline"></div>
-      </div>
-      <div class="circle">
-        <div class="dot"></div>
-        <div class="outline"></div>
-      </div>
-    </div>
+
       <p id="response-msg"></p>
     </main>
   </body>
