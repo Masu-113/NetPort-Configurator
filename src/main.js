@@ -1,8 +1,11 @@
 const { invoke } = window.__TAURI__.core;
 
 async function cargarDatos() {
+  const loader = document.querySelector('.loader'); // Selecciona el loader
+  loader.classList.add('active'); // Muestra el loader
+
   try {
-    const salida = await invoke("ejecutar_powershell");
+    const salida = await invoke("mostrar_puertos_red"); // Cambia a la función que muestra los puertos
     console.log("salida completa:", JSON.stringify(salida));
 
     if (!salida.includes("|")) throw new Error("Formato invalido");
@@ -17,6 +20,26 @@ async function cargarDatos() {
     document.querySelector("#response-msg").textContent = "Datos cargados desde PowerShell";
   } catch (e) {
     document.querySelector("#response-msg").textContent = "Error: " + e.message;
+  } finally {
+    loader.classList.remove('active'); // Oculta el loader al final
+  }
+}
+
+async function cambiarVlan() {
+  const loader = document.querySelector('.loader'); // Selecciona el loader
+  loader.classList.add('active'); // Muestra el loader
+
+  try {
+    const interfaceName = document.querySelector("#port-name").value; // Obtener el nombre de la interfaz
+    const newVlanId = document.querySelector("#vlan-input").value; // Obtener el nuevo VLAN ID desde el campo de entrada
+
+    const salida = await invoke("cambiar_vlan", { interface_name: interfaceName, new_vlan_id: newVlanId }); // Llama a la función que cambia el VLAN
+    console.log("Salida de cambiar VLAN:", JSON.stringify(salida));
+    document.querySelector("#response-msg").textContent = "VLAN cambiado: " + salida;
+  } catch (e) {
+    document.querySelector("#response-msg").textContent = "Error: " + e.message;
+  } finally {
+    loader.classList.remove('active'); // Oculta el loader al final
   }
 }
 
@@ -25,5 +48,12 @@ window.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", e => {
     e.preventDefault();
     cargarDatos();
+  });
+
+  // Agregar un evento para cambiar VLAN
+  const cambiarVlanButton = document.querySelector("#cambiar-vlan-button");
+  cambiarVlanButton.addEventListener("click", e => {
+    e.preventDefault();
+    cambiarVlan();
   });
 });
