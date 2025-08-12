@@ -12,7 +12,7 @@
     <main class="container">
       <h1>Welcome to Tauri</h1>
       <form class="row" id="data-form">
-        <div class="flex-row">
+        <div id="form-original" class="flex-row">
           <label for="Nombre">Nombre: </label>
           <input id="port-name" placeholder="Nombre del puerto" readonly/>
           
@@ -25,15 +25,14 @@
           <label for="vlan">VLAN Actual: </label>
           <input id="vlan" placeholder="VLAN" readonly/>
 
-          <label for="vlan-input">Nuevo VLAN ID: </label>
-          <input id="vlan-input" placeholder="Ingrese nuevo VLAN ID" /> <!-- Campo para el nuevo ID de VLAN -->
-          
           <button type="submit">Buscar</button>
         </div>
+        <div class="flex-row">
+          <label for="vlan-input">Nuevo VLAN ID: </label>
+          <input id="vlan-input" placeholder="Ingrese nuevo VLAN ID" />
+          <button id="cambiar-vlan-button">Cambiar VLAN</button>
+        </div>
       </form>
-
-      <button id="cambiar-vlan-button">Cambiar VLAN</button> <!-- Botón para cambiar VLAN -->
-
       <div class="loader">
         <div class="circle">
           <div class="dot"></div>
