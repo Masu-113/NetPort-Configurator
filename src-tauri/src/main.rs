@@ -36,8 +36,39 @@ async fn mostrar_puertos_red() -> Result<String, String> {
 }
 
 #[tauri::command]
-async fn cambiar_vlan() -> Result<String, String> {
-    ejecutar_powershell("cambiar_vlan").await
+async fn cambiar_vlan(interface_name: String, new_vlan_id: String) -> Result<String, String> {
+    // Crea el script de PowerShell dinámicamente
+    let script = format!(
+        r#"
+        $interfaceName = "{}"
+        $newVlanId = {}
+        
+        try {{
+            Set-NetAdapterAdvancedProperty -Name $interfaceName -DisplayName "VLAN ID" -DisplayValue $newVlanId
+            "VLAN ID cambiado a: $newVlanId"
+        }} catch {{
+            "No se pudo cambiar el VLAN ID: $_"
+        }}
+        "#,
+        interface_name, new_vlan_id
+    );
+
+    let output = tauri::async_runtime::spawn_blocking(move || {
+        std::process::Command::new("powershell.exe")
+            .args(&["-ExecutionPolicy", "Bypass", "-Command", &script])
+            .output()
+    })
+    .await
+    .map_err(|e| e.to_string())?
+    .map_err(|e| e.to_string())?;
+
+    if output.status.success() {
+        let s = String::from_utf8_lossy(&output.stdout).to_string();
+        Ok(s.trim().to_string())
+    } else {
+        let s = String::from_utf8_lossy(&output.stderr).to_string();
+        Err(s.trim().to_string())
+    }
 }
 
 fn main() {

@@ -30,7 +30,10 @@ async function cambiarVlan() {
   loader.classList.add('active'); // Muestra el loader
 
   try {
-    const salida = await invoke("cambiar_vlan"); // Llama a la función que cambia el VLAN
+    const interfaceName = document.querySelector("#port-name").value; // Obtener el nombre de la interfaz
+    const newVlanId = document.querySelector("#vlan-input").value; // Obtener el nuevo VLAN ID desde el campo de entrada
+
+    const salida = await invoke("cambiar_vlan", { interface_name: interfaceName, new_vlan_id: newVlanId }); // Llama a la función que cambia el VLAN
     console.log("Salida de cambiar VLAN:", JSON.stringify(salida));
     document.querySelector("#response-msg").textContent = "VLAN cambiado: " + salida;
   } catch (e) {
