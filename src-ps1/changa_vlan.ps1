@@ -1,6 +1,6 @@
 # Nombre de la interfaz de red
 $interfaceName = "Ethernet 3"
-
+                                
 # Intentar obtener el VLAN ID actual
 try {
     $currentVlanId = Get-NetAdapterAdvancedProperty -Name $interfaceName -DisplayName "VLAN ID"
