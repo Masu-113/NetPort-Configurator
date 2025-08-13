@@ -12,7 +12,7 @@
     <main class="container">
       <h1>Welcome to Tauri</h1>
       <form class="row" id="data-form">
-        <div id="form-original" class="flex-row">
+        <div id="form-original" class="card flex-row">
           <label for="Nombre">Nombre: </label>
           <input id="port-name" placeholder="Nombre del puerto" readonly/>
           
@@ -22,16 +22,23 @@
           <label for="mask">Mask:</label>
           <input id="subnet-mask" placeholder="Máscara" readonly/>
           
-          <label for="vlan">VLAN Actual: </label>
+          <label for="vlan">VLAN Id: </label>
           <input id="vlan" placeholder="VLAN" readonly/>
 
           <button type="submit">Buscar</button>
         </div>
-        <div class="flex-row">
+        <div id="form-original" class="card flex-row">
           <label for="vlan-input">Nuevo VLAN ID: </label>
           <input id="vlan-input" placeholder="Ingrese nuevo VLAN ID" />
           <button id="cambiar-vlan-button">Cambiar VLAN</button>
+          <hr>
+          <label for="ip-input">Nuevo Ip:</label>
+          <input id="ip-input" placeholder="0.0.0.0" />
+          <button id="cambiar-ip-button">Cambiar IP </button>
+
+          <label for="input"></label>
         </div>
+
       </form>
       <div class="loader">
         <div class="circle">
@@ -51,7 +58,6 @@
           <div class="outline"></div>
         </div>
       </div>
-
       <p id="response-msg"></p>
     </main>
   </body>

@@ -226,6 +226,24 @@ form#data-form {
   max-width: 700px;
 }
 
+.card {
+  box-sizing: border-box;
+  height: 200px;
+  border: 1px solid white;
+  box-shadow: 12px 17px 51px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(6px);
+  border-radius: 17px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.5s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  font-weight: bolder;
+  color: black;
+}
+
 .flex-row  {
   display: flex;
   flex-wrap: wrap;
