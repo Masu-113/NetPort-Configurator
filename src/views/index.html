@@ -9,8 +9,16 @@
   </head>
 
   <body>
-    <main class="container">
-      <h1>Welcome to Tauri</h1>
+    <div class="dashboard">
+      <nav class="sidebar">
+        <ul>  
+          <li><a href="#">Inicio</a></li>
+          <li><a href="#">Perfil</a></li>
+          <li><a href="#">Configuración</a></li>
+        </ul>
+      </nav>
+      <section class="content">
+        <main class="container">
       <form class="row" id="data-form">
         <div id="form-original" class="card flex-row">
           <label for="Nombre">Nombre: </label>
@@ -38,6 +46,8 @@
 
           <label for="input"></label>
         </div>
+      </section>
+    </div>
 
       </form>
       <div class="loader">
