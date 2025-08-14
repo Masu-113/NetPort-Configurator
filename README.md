@@ -1,3 +1,24 @@
+<!-- Logo del proyecto -->
+<p align="center">
+  <img src="https://via.placeholder.com/150" alt="NetPort Configurator Logo" width="150">
+</p>
+
+<h1 align="center">NetPort Configurator</h1>
+
+<p align="center">
+  Aplicación de escritorio para <b>Windows</b> desarrollada con <b>Tauri</b> y <b>HTML/CSS/JavaScript</b> para visualizar y modificar configuraciones de puertos de red.
+</p>
+
+<!-- Badges -->
+<p align="center">
+  <img src="https://img.shields.io/badge/Plataforma-Windows-blue?style=flat-square" alt="Windows">
+  <img src="https://img.shields.io/badge/Tauri-v2.x-orange?style=flat-square" alt="Tauri v2">
+  <img src="https://img.shields.io/badge/Licencia-Pendiente-lightgrey?style=flat-square" alt="Licencia">
+  <img src="https://img.shields.io/badge/Estado-En%20Desarrollo-yellow?style=flat-square" alt="Estado">
+</p>
+
+---
+
 # NetPort Configurator
 
 Aplicación de escritorio para **Windows**, desarrollada con **Tauri** y **HTML/CSS/JavaScript**, diseñada para visualizar y modificar configuraciones de puertos de red de manera sencilla a través de una interfaz gráfica.
@@ -82,7 +103,7 @@ Ejemplos:
 ## 「Compilación para distribución」
 
 Generar ejecutable para Windows:
-    ```bash
+
     
     npm run tauri build
 
@@ -97,3 +118,29 @@ Dentro de la carpeta **bundle** estaran dos carpetas:
 - Carpeta `nsis` que tiene el archivo ejecutable en `.exe`
 
 Para compilar si esta utilizando Linux o Mac, seguir la [documentación oficial de Tauri](https://v2.tauri.app/es/distribute/windows-installer/#build-windows-apps-on-linux-and-macos).
+
+---
+
+## 「Notas sobre permisos elevados」
+
+- La aplicacion utiliza scripts de `Powershell` que requieren permisos de Administrador.
+- Para evitar que se soliciten credenciales cada vez que se utilice la aplicacion, se recomienda:
+    
+    1. creat un acceso directo con `runas`.
+    2. configurar el almacenamiento seguro de credenciales de Windows.
+
+- Importante: la manipulacion de configuraciones de red puede afectar la conectividad del sistema, *Usar con precaucion*.
+
+---
+
+## 「Estructura del Proyecto」
+
+├── src/                # Archivos HTML, CSS y JS de la interfaz
+├── src-tauri/          # Configuración y código backend de Tauri
+│   ├── icons/          # Iconos de la aplicación
+│   ├── tauri.conf.json # Configuración principal de Tauri
+│   └── ...
+├── scripts/            # Scripts PowerShell (.ps1) para cambios de red
+├── package.json        # Configuración del proyecto y scripts npm
+└── README.md           # Documentación del proyecto
+
