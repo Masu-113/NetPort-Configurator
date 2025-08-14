@@ -82,13 +82,13 @@ Ejemplos:
 ## 「Compilación para distribución」
 
 Generar ejecutable para Windows:
-    
     ```bash
+    
     npm run tauri build
 
 El archivo resultante estara en:
     
-    ```bash
+    
     /src-tauri/target/release/bundle
 
 Dentro de la carpeta **bundle** estaran dos carpetas:
