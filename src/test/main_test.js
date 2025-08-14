@@ -1,12 +1,10 @@
 const { invoke } = window.__TAURI__.core;
 
 async function cargarDatos() {
-  const loader = document.querySelector('.loader.circle');
-  loader.classList.add('active');
-
   try {
-    const salida = await invoke("mostrar_puertos_red");
+    const salida = await invoke("ejecutar_powershell");
     console.log("salida completa:", JSON.stringify(salida));
+    console.log(salida)
 
     if (!salida.includes("|")) throw new Error("Formato invalido");
 
@@ -20,14 +18,10 @@ async function cargarDatos() {
     document.querySelector("#response-msg").textContent = "Datos cargados desde PowerShell";
   } catch (e) {
     document.querySelector("#response-msg").textContent = "Error: " + e.message;
-  } finally {
-    loader.classList.remove('active');
   }
 }
 
 async function cambiarVlan() {
-  const loader = document.querySelector('.loader.circle');
-  loader.classList.add('active'); 
 
   try {
     const interfaceName = document.querySelector("#port-name").value;
@@ -38,9 +32,21 @@ async function cambiarVlan() {
     document.querySelector("#response-msg").textContent = "VLAN cambiado: " + salida;
   } catch (e) {
     document.querySelector("#response-msg").textContent = "Error: " + e.message;
-  } finally {
-    loader.classList.remove('active'); 
   }
+}
+
+function addform(){
+  const contenedor = document.getElementById("form-contenedor");
+  const cont_original = document.getElementById("form-original");
+  const clon = cont_original.cloneNode(true)
+  
+  const inputs = clon.querySelectorAll('input');
+  inputs.forEach(input => input.value = '');
+
+  const nuevoId = 'formulario-' + (document.querySelectorAll('#form-contenedor > div'.length +1));
+  clon.id = nuevoId
+
+  contenedor.appendChild(clon)
 }
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -49,7 +55,6 @@ window.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     cargarDatos();
   });
-
   // para cambiar VLAN
   const cambiarVlanButton = document.querySelector("#cambiar-vlan-button");
   cambiarVlanButton.addEventListener("click", e => {
