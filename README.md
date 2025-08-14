@@ -13,7 +13,7 @@ Incluye scripts **PowerShell (.ps1)** integrados que se ejecutan con permisos el
 
 ---
 
-## 🚀 Características
+## 「Características」
 
 - Visualización de puertos de red disponibles en el equipo.
 - Configuración rápida de VLAN ID, IP, máscara y gateway.
@@ -24,7 +24,7 @@ Incluye scripts **PowerShell (.ps1)** integrados que se ejecutan con permisos el
 
 ---
 
-## 📋 Requisitos previos
+## 「Requisitos previos」
 
 Antes de ejecutar o compilar el proyecto, asegúrate de tener instalado:
 
@@ -37,7 +37,7 @@ Antes de ejecutar o compilar el proyecto, asegúrate de tener instalado:
 
 ---
 
-## ⚙️ Instalación para desarrollo
+## 「Instalación para desarrollo」
 
 1. **Clonar el repositorio**
    ```bash
@@ -45,4 +45,52 @@ Antes de ejecutar o compilar el proyecto, asegúrate de tener instalado:
    cd netport-configurator
 
 2. **Instalar Dependencias**
+    ```bash
     npm install
+3. **Ejecutar modo desarrollo**
+    ```bash
+    npm run tauiri dev
+
+---
+
+## 「 Uso 」
+
+1. **Ejecucion con permisos elevados**
+
+- Crea un acceso directo que incluya.
+
+Ejemplos: 
+
+1. 
+   ```bash 
+    runas /noprofile /user:mymachine\NameUser /savedcred "ruta_mi_archivo.exe"
+2. 
+    ```bash
+    runas /noprofile /user:mydomain\NameUser /savedcred "ruta_mi_archivo.exe"
+
+- Configura el acceso directo para que no solicite credenciales cada vez (usando almacenamiento seguro de credenciales de Windows).
+
+2. **Funciones disponibles en la interfaz**
+
+- Seleccionar puerto de red.
+
+- Ver VLAN ID actual.
+
+- Modificar IP, máscara y puerta de enlace.
+
+- Guardar y aplicar cambios mediante scripts .ps1.
+
+## 「Compilación para distribución」
+
+Generar ejecutable para Windows:
+    ```bash
+    npm run tauri build
+
+El archivo resultante estara en:
+    ```bash
+    src-tauri\target\release\bundle
+
+Dentro de la carpeta **bundle** estaran dos carpetas:
+
+- Carpeta **msi** que tiene el archivo ejecutable en **.msi**
+- Carpeta **nsis** que tiene el archivo ejecutable en **.exe**
