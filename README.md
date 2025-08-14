@@ -73,24 +73,27 @@ Ejemplos:
 2. **Funciones disponibles en la interfaz**
 
 - Seleccionar puerto de red.
-
 - Ver VLAN ID actual.
-
 - Modificar IP, máscara y puerta de enlace.
-
 - Guardar y aplicar cambios mediante scripts .ps1.
+
+---
 
 ## 「Compilación para distribución」
 
 Generar ejecutable para Windows:
+    
     ```bash
     npm run tauri build
 
 El archivo resultante estara en:
+    
     ```bash
-    src-tauri\target\release\bundle
+    /src-tauri/target/release/bundle
 
 Dentro de la carpeta **bundle** estaran dos carpetas:
+ 
+- Carpeta `msi` que tiene el archivo ejecutable en `.msi`
+- Carpeta `nsis` que tiene el archivo ejecutable en `.exe`
 
-- Carpeta **msi** que tiene el archivo ejecutable en **.msi**
-- Carpeta **nsis** que tiene el archivo ejecutable en **.exe**
+Para compilar si esta utilizando Linux o Mac, seguir la [documentación oficial de Tauri](https://v2.tauri.app/es/distribute/windows-installer/#build-windows-apps-on-linux-and-macos).
