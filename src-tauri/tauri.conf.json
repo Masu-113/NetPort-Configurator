@@ -4,8 +4,7 @@
   "version": "0.1.0",
   "identifier": "com.tauriapp",
   "build": {
-    "frontendDist": "../src",
-    "beforeBuildCommand": "node src/modificacion.cjs"
+    "frontendDist": "../src"
   },
   "app": {
     "withGlobalTauri": true,
