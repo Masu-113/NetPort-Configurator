@@ -1,6 +1,6 @@
 <!-- Logo del proyecto -->
 <p align="center">
-  <img src="https://via.placeholder.com/150" alt="NetPort Configurator Logo" width="150">
+  <img src="src\assets\logo_NetPort.png" alt="NetPort Configurator Logo" width="150">
 </p>
 
 <h1 align="center">NetPort Configurator</h1>
@@ -74,7 +74,7 @@ Antes de ejecutar o compilar el proyecto, asegúrate de tener instalado:
 
 ---
 
-## 「 Uso 」
+## 「Uso」
 
 1. **Ejecucion con permisos elevados**
 
@@ -135,12 +135,13 @@ Para compilar si esta utilizando Linux o Mac, seguir la [documentación oficial 
 
 ## 「Estructura del Proyecto」
 
-├── src/                # Archivos HTML, CSS y JS de la interfaz
-├── src-tauri/          # Configuración y código backend de Tauri
-│   ├── icons/          # Iconos de la aplicación
-│   ├── tauri.conf.json # Configuración principal de Tauri
-│   └── ...
-├── scripts/            # Scripts PowerShell (.ps1) para cambios de red
-├── package.json        # Configuración del proyecto y scripts npm
-└── README.md           # Documentación del proyecto
+    ```bash
+    ├── src/                # Archivos HTML, CSS y JS de la interfaz
+    ├── src-tauri/          # Configuración y código backend de Tauri
+    │   ├── icons/          # Iconos de la aplicación
+    │   ├── tauri.conf.json # Configuración principal de Tauri
+    │   └── ...
+    ├── scripts/            # Scripts PowerShell (.ps1) para cambios de red
+    ├── package.json        # Configuración del proyecto y scripts npm
+    └── README.md           # Documentación del proyecto
 
