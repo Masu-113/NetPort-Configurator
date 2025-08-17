@@ -1,6 +1,6 @@
 <!-- Logo del proyecto -->
 <p align="center">
-  <img src="src\assets\logo_NetPort.png" alt="NetPort Configurator Logo" width="150">
+  <img src="src\assets\logo_NetPort_big.png" alt="NetPort Configurator Logo" width="150">
 </p>
 
 <h1 align="center">NetPort Configurator</h1>
@@ -135,7 +135,7 @@ Para compilar si esta utilizando Linux o Mac, seguir la [documentación oficial 
 
 ## 「Estructura del Proyecto」
 
-    ```bash
+    
     ├── src/                # Archivos HTML, CSS y JS de la interfaz
     ├── src-tauri/          # Configuración y código backend de Tauri
     │   ├── icons/          # Iconos de la aplicación
