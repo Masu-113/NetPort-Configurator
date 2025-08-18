@@ -1,55 +1,62 @@
 const { invoke } = window.__TAURI__.core;
 
 async function cargarDatos() {
-  const loader = document.querySelector('.loader.circle');
-  loader.classList.add('active');
-
   try {
-    const salida = await invoke("mostrar_puertos_red");
+    const salida = await invoke("ejecutar_powershell");
     console.log("salida completa:", JSON.stringify(salida));
+    console.log(salida);
 
-    // Limpiar el contenedor antes de mostrar nuevos datos
-    const portInfoContainer = document.getElementById('port-info-container');
-    portInfoContainer.innerHTML = '';
+    if (!salida.includes("|")) throw new Error("Formato invalido");
+    const lineas = salida.split("\r\n");
+    
+    // Limpiar las entradas
+    const contenedor = document.querySelector("#contenedor-entradas");
+    contenedor.innerHTML = '';
 
-    // Suponiendo que la salida es un string con múltiples líneas para cada puerto
-    const puertos = salida.split("\n");
+    // Procesar cada línea
+    lineas.forEach(linea => {
+      const [nombre, ip, mask, vlan] = linea.split("|");
 
-    puertos.forEach(puerto => {
-      if (!puerto.includes("|")) throw new Error("Formato invalido en la línea: " + puerto);
+      // creacion de un nuevo div para imprimir
+      const divEntrada = document.createElement("div");
+      divEntrada.classList.add("entrada");
 
-      const [nombre, ip, mask, vlan] = puerto.split("|").map(item => item.trim());
+      // Creacion de inputs
+      const inputNombre = document.createElement("input");
+      inputNombre.value = nombre.trim();
+      inputNombre.placeholder = "Nombre del puerto";
+      inputNombre.readOnly = true;
 
-      // Crear una tarjeta para cada puerto
-      const card = document.createElement('div');
-      card.className = 'card flex-row';
-      card.innerHTML = `
-        <div>
-          <strong>Nombre:</strong> ${nombre} <br>
-          <strong>IP:</strong> ${ip} <br>
-          <strong>Máscara:</strong> ${mask} <br>
-          <strong>VLAN:</strong> ${vlan} <br>
-        </div>
-      `;
+      const inputIp = document.createElement("input");
+      inputIp.value = ip.trim();
+      inputIp.placeholder = "IP";
+      inputIp.readOnly = true;
 
-      // Agregar la tarjeta al contenedor
-      portInfoContainer.appendChild(card);
+      const inputMask = document.createElement("input");
+      inputMask.value = mask.trim();
+      inputMask.placeholder = "Máscara";
+      inputMask.readOnly = true;
+
+      const inputVlan = document.createElement("input");
+      inputVlan.value = vlan.trim();
+      inputVlan.placeholder = "VLAN";
+      inputVlan.readOnly = true;
+
+      // Agregar los inputs
+      divEntrada.appendChild(inputNombre);
+      divEntrada.appendChild(inputIp);
+      divEntrada.appendChild(inputMask);
+      divEntrada.appendChild(inputVlan);
+
+      // Agregar el div de entrada al contenedor
+      contenedor.appendChild(divEntrada);
     });
 
     document.querySelector("#response-msg").textContent = "Datos cargados desde PowerShell";
   } catch (e) {
     document.querySelector("#response-msg").textContent = "Error: " + e.message;
-  } finally {
-    loader.classList.remove('active');
   }
 }
-
-const toggleBtn = document.querySelector('.toggle-btn');
-const sidebar = document.querySelector('.sidebar');
-
-toggleBtn.addEventListener('click', () => {
-  sidebar.classList.toggle('minimized');
-});
 
 async function cambiarVlan() {
 
