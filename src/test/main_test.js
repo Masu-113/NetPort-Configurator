@@ -1,25 +1,55 @@
 const { invoke } = window.__TAURI__.core;
 
 async function cargarDatos() {
+  const loader = document.querySelector('.loader.circle');
+  loader.classList.add('active');
+
   try {
-    const salida = await invoke("ejecutar_powershell");
+    const salida = await invoke("mostrar_puertos_red");
     console.log("salida completa:", JSON.stringify(salida));
-    console.log(salida)
 
-    if (!salida.includes("|")) throw new Error("Formato invalido");
+    // Limpiar el contenedor antes de mostrar nuevos datos
+    const portInfoContainer = document.getElementById('port-info-container');
+    portInfoContainer.innerHTML = '';
 
-    const [nombre, ip, mask, vlan] = salida.split("|");
+    // Suponiendo que la salida es un string con múltiples líneas para cada puerto
+    const puertos = salida.split("\n");
 
-    document.querySelector("#port-name").value = nombre.trim();
-    document.querySelector("#ip-address").value = ip.trim();
-    document.querySelector("#subnet-mask").value = mask.trim();
-    document.querySelector("#vlan").value = vlan.trim();
+    puertos.forEach(puerto => {
+      if (!puerto.includes("|")) throw new Error("Formato invalido en la línea: " + puerto);
+
+      const [nombre, ip, mask, vlan] = puerto.split("|").map(item => item.trim());
+
+      // Crear una tarjeta para cada puerto
+      const card = document.createElement('div');
+      card.className = 'card flex-row';
+      card.innerHTML = `
+        <div>
+          <strong>Nombre:</strong> ${nombre} <br>
+          <strong>IP:</strong> ${ip} <br>
+          <strong>Máscara:</strong> ${mask} <br>
+          <strong>VLAN:</strong> ${vlan} <br>
+        </div>
+      `;
+
+      // Agregar la tarjeta al contenedor
+      portInfoContainer.appendChild(card);
+    });
 
     document.querySelector("#response-msg").textContent = "Datos cargados desde PowerShell";
   } catch (e) {
     document.querySelector("#response-msg").textContent = "Error: " + e.message;
+  } finally {
+    loader.classList.remove('active');
   }
 }
+
+const toggleBtn = document.querySelector('.toggle-btn');
+const sidebar = document.querySelector('.sidebar');
+
+toggleBtn.addEventListener('click', () => {
+  sidebar.classList.toggle('minimized');
+});
 
 async function cambiarVlan() {
 
