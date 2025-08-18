@@ -5,8 +5,7 @@ async fn ejecutar_powershell() -> Result<String, String> {
 
     let output = tauri::async_runtime::spawn_blocking(move || {
         std::process::Command::new("powershell.exe")
-            .args(&["-WindowStyle","Hidden","-ExecutionPolicy", "Bypass", "-File", &script_path])
-            .output()
+            .args(&["-WindowStyle", "Hidden", "-File", &script_path])
     })
     .await
     .map_err(|e| e.to_string())?

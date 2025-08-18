@@ -1,10 +1,26 @@
-$adapter = Get-NetAdapter | Where-Object { $_.Status -eq "Up" } | Select-Object -First 1
-$ipConfig = Get-NetIPAddress -InterfaceIndex $adapter.ifIndex -AddressFamily IPv4 | Select-Object -First 1
-$vlanID = ($adapter | Get-NetAdapterAdvancedProperty -DisplayName "VLAN ID" -ErrorAction SilentlyContinue).DisplayValue
+# Obtener todos los adaptadores de red
+$adapters = Get-NetAdapter
 
-$nombre = $adapter.Name
-$ip = $ipConfig.IPAddress
-$mask = $ipConfig.PrefixLength
-$vlan = if ($vlanID) { $vlanID } else { "Null" }
+# Crear una lista para almacenar los resultados
+$resultados = @()
 
-Write-Output "$nombre|$ip|$mask|$vlan"
+foreach ($adapter in $adapters) {
+    # Obtener la configuración IP para cada adaptador
+    $ipConfig = Get-NetIPAddress -InterfaceIndex $adapter.ifIndex -AddressFamily IPv4 | Select-Object -First 1
+    
+    # Obtener el VLAN ID
+    $vlanID = ($adapter | Get-NetAdapterAdvancedProperty -DisplayName "VLAN ID" -ErrorAction SilentlyContinue).DisplayValue
+    
+    # Preparar los valores para el output
+    $nombre = $adapter.Name
+    $ip = if ($ipConfig) { $ipConfig.IPAddress } else { "No IP" }
+    $mask = if ($ipConfig) { $ipConfig.PrefixLength } else { "No Mask" }
+    $vlan = if ($vlanID) { $vlanID } else { "Null" }
+    
+    # Agregar los resultados a la lista
+    $resultados += "$nombre|$ip|$mask|$vlan"
+}
+
+# Mostrar los resultados
+Write-Output $resultados
+
