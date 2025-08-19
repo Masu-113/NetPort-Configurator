@@ -10,7 +10,8 @@ foreach ($adapter in $adapters) {
     
     # Obtener el VLAN ID
     $vlanID = ($adapter | Get-NetAdapterAdvancedProperty -DisplayName "VLAN ID" -ErrorAction SilentlyContinue).DisplayValue
-    
+    $status = $adapter.Status
+
     # Preparar los valores para el output
     $nombre = $adapter.Name
     $ip = if ($ipConfig) { $ipConfig.IPAddress } else { "No IP" }
@@ -18,7 +19,7 @@ foreach ($adapter in $adapters) {
     $vlan = if ($vlanID) { $vlanID } else { "Null" }
     
     # Agregar los resultados a la lista
-    $resultados += "$nombre|$ip|$mask|$vlan"
+    $resultados += "$nombre|$ip|$mask|$vlan|$status"
 }
 
 # Mostrar los resultados
