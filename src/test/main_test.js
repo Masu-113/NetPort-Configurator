@@ -1,5 +1,5 @@
 const { invoke } = window.__TAURI__.core;
-
+// -------- funcion para extraer la informacion de los puertos -------- //
 async function cargarDatos() {
   try {
     const salida = await invoke("ejecutar_powershell");
@@ -42,7 +42,7 @@ async function cargarDatos() {
   }
 }
 
-// Llenar card de edición
+// ----- Llenar card de edicion con el puerto seleccionado ------ //
 function editarPuerto(nombre, ip, mask, vlan, status) {
   document.querySelector("#card-edicion").classList.remove("oculto");
 
@@ -63,15 +63,26 @@ async function guardarCambios() {
   };
 
   try {
+    console.log("Datos a enviar:", datos);
     await invoke("cambiar_config_puerto", { datos });
     alert("Cambios aplicados correctamente");
     cargarDatos();
   } catch (e) {
+    console.log("Error al aplicar cambios: ", e)
     alert("Error al aplicar cambios: " + e.message);
   }
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    const btnAplicarCambios = document.querySelector("#btn-aplicar-cambios");
+    if (btnAplicarCambios) {
+        btnAplicarCambios.addEventListener("click", guardarCambios);
+    } else {
+        console.error("Botón de aplicar cambios no encontrado");
+    }
+});
 
+// ------------------------------------------------------------------------------- //
 async function cambiarVlan() {
 
   try {

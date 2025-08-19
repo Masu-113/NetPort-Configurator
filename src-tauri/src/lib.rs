@@ -1,11 +1,12 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
 async fn ejecutar_powershell() -> Result<String, String> {
-    let script_path = r"C:\Users\msuarez\tauri-app\src-ps1\get_network_info.ps1".to_string();
+    let script_path = r"../src-ps1/get_network_info.ps1".to_string();
 
     let output = tauri::async_runtime::spawn_blocking(move || {
         std::process::Command::new("powershell.exe")
-            .args(&["-WindowStyle", "Hidden", "-File", &script_path])
+            .args(&["-ExecutionPolicy", "Bypass", "-File", &script_path])
+            .output()
     })
     .await
     .map_err(|e| e.to_string())?
@@ -60,11 +61,41 @@ async fn cambiar_vlan(interface_name: String, new_vlan_id: String) -> Result<Str
     }
 }
 
+use std::process::Command;
+
+#[tauri::command]
+fn cambiar_config_puerto(datos: serde_json::Value) -> Result<(), String> {
+    let nombre = datos["nombre"].as_str().unwrap_or("");
+    let ip = datos["ip"].as_str().unwrap_or("");
+    let mask = datos["mask"].as_str().unwrap_or("");
+    let vlan = datos["vlan"].as_str().unwrap_or("");
+
+    let output = Command::new("powershell.exe")
+        .arg("-ExecutionPolicy")
+        .arg("Bypass")
+        .arg("-File")
+        .arg("../src-ps1/change_conf_port.ps1")
+        .arg("-nombre").arg(nombre)
+        .arg("-ip").arg(ip)
+        .arg("-mask").arg(mask)
+        .arg("-vlan").arg(vlan)
+        .output()
+        .expect("Failed to execute command");
+
+    if output.status.success() {
+        Ok(())
+    } else {
+        let error_message = String::from_utf8_lossy(&output.stderr);
+        Err(format!("Error al modificar la configuración del puerto: {}", error_message))
+    }
+}
+
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![ejecutar_powershell, cambiar_vlan])
+        .invoke_handler(tauri::generate_handler![ejecutar_powershell, cambiar_vlan, cambiar_config_puerto])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
