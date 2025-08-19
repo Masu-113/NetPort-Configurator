@@ -1,8 +1,9 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="/styles.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tauri App</title>
@@ -25,38 +26,54 @@
           <span class="item-name">Acerca de</span>
         </div>
       </div>
+
       <section class="content">
         <main class="container">
       <form class="row" id="data-form">
-        <div id="form-original" class="card flex-row">
-          <label for="Nombre">Nombre: </label>
-          <input id="port-name" placeholder="Nombre del puerto" readonly/>
-          
-          <label for="Puerto"> Puerto: </label>
-          <input id="ip-address" placeholder="IP" readonly/>
-          
-          <label for="mask">Mask:</label>
-          <input id="subnet-mask" placeholder="Máscara" readonly/>
-          
-          <label for="vlan">VLAN Id: </label>
-          <input id="vlan" placeholder="VLAN" readonly/>
+        <div id="form-original" class="card">
+          <h2 class="titulo">Información de los Puertos de Red</h2>
+          <!-- Encabezado de la tabla -->
+          <div class="fila encabezado">
+            <div class="col">Nombre</div>
+            <div class="col">IP</div>
+            <div class="col">Máscara</div>
+            <div class="col">VLAN</div>
+            <div class="col">Estado</div>
+          </div>
 
-          <button type="submit">Buscar</button>
+          <div id="contenedor-entradas" class="tabla-puertos">
+            <!-- Aquí JS insertará las filas -->
+          </div>
+          <button type="submit" class="btn-buscar">Buscar</button>
+          <p id="response-msg"></p>
         </div>
-        <div id="form-original" class="card flex-row">
-          <label for="vlan-input">Nuevo VLAN ID: </label>
-          <input id="vlan-input" placeholder="Ingrese nuevo VLAN ID" />
-          <button id="cambiar-vlan-button">Cambiar VLAN</button>
-          <hr>
-          <label for="ip-input">Nuevo Ip:</label>
-          <input id="ip-input" placeholder="0.0.0.0" />
-          <button id="cambiar-ip-button">Cambiar IP </button>
+        <!-- Segunda card: formulario de edición -->
+        <div id="card-edicion" class="card oculto">
+          <h2>Editar Puerto de Red</h2>
+          <form id="form-edicion" class="input-contai">
 
-          <label for="input"></label>
+            <input type="text" id="edit-nombre" readonly>
+            <label>Nombre del Puerto</label>
+            <div class="underline"></div>
+
+            <label>Dirección IP</label>
+            <input type="text" id="edit-ip">
+
+            <label>Máscara de Subred</label>
+            <input type="text" id="edit-mask">
+
+            <label>VLAN</label>
+            <input type="text" id="edit-vlan">
+
+            <label>Estado</label>
+            <input type="text" id="edit-status" readonly>
+
+            <button type="button" onclick="guardarCambios()">Aplicar Cambios</button>
+          </form>
         </div>
       </section>
-    </div>
 
+    </div>
       </form>
       <div class="loader">
         <div class="circle">

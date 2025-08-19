@@ -3,60 +3,74 @@ const { invoke } = window.__TAURI__.core;
 async function cargarDatos() {
   try {
     const salida = await invoke("ejecutar_powershell");
-    console.log("salida completa:", JSON.stringify(salida));
-    console.log(salida);
-
     if (!salida.includes("|")) throw new Error("Formato invalido");
-    const lineas = salida.split("\r\n");
-    
-    // Limpiar las entradas
+
+    const lineas = salida.split(/\r?\n/);
     const contenedor = document.querySelector("#contenedor-entradas");
     contenedor.innerHTML = '';
 
-    // Procesar cada línea
     lineas.forEach(linea => {
-      const [nombre, ip, mask, vlan] = linea.split("|");
+    if (!linea.trim()) return;
+    const [nombre, ip, mask, vlan, status] = linea.split("|");
 
-      // creacion de un nuevo div para imprimir
-      const divEntrada = document.createElement("div");
-      divEntrada.classList.add("entrada");
+    const fila = document.createElement("div");
+    fila.classList.add("fila");
 
-      // Creacion de inputs
-      const inputNombre = document.createElement("input");
-      inputNombre.value = nombre.trim();
-      inputNombre.placeholder = "Nombre del puerto";
-      inputNombre.readOnly = true;
+    const btnEditar = document.createElement("Button")
+    btnEditar.classList.add("btn-editar");
+    btnEditar.innerHTML = `<img src="../assets/icone-config.png" alt="icono" width="20" height="20">`;
+    btnEditar.onclick = () => editarPuerto(nombre, ip, mask, vlan, status);
 
-      const inputIp = document.createElement("input");
-      inputIp.value = ip.trim();
-      inputIp.placeholder = "IP";
-      inputIp.readOnly = true;
-
-      const inputMask = document.createElement("input");
-      inputMask.value = mask.trim();
-      inputMask.placeholder = "Máscara";
-      inputMask.readOnly = true;
-
-      const inputVlan = document.createElement("input");
-      inputVlan.value = vlan.trim();
-      inputVlan.placeholder = "VLAN";
-      inputVlan.readOnly = true;
-
-      // Agregar los inputs
-      divEntrada.appendChild(inputNombre);
-      divEntrada.appendChild(inputIp);
-      divEntrada.appendChild(inputMask);
-      divEntrada.appendChild(inputVlan);
-
-      // Agregar el div de entrada al contenedor
-      contenedor.appendChild(divEntrada);
-    });
+    fila.innerHTML = `
+      <div class="col">${nombre?.trim() || "—"}</div>
+      <div class="col">${ip?.trim() || "—"}</div>
+      <div class="col">${mask?.trim() || "—"}</div>
+      <div class="col">${vlan?.trim() || "—"}</div>
+      <div class="col estado">
+        <span class="circulo ${status?.trim() === "Up" ? "verde" : "rojo"}"></span>
+        ${status?.trim() || "—"}
+      </div>
+    `;
+    
+    fila.querySelector('.estado').appendChild(btnEditar)
+    contenedor.appendChild(fila);
+  });
 
     document.querySelector("#response-msg").textContent = "Datos cargados desde PowerShell";
   } catch (e) {
     document.querySelector("#response-msg").textContent = "Error: " + e.message;
   }
 }
+
+// Llenar card de edición
+function editarPuerto(nombre, ip, mask, vlan, status) {
+  document.querySelector("#card-edicion").classList.remove("oculto");
+
+  document.querySelector("#edit-nombre").value = nombre;
+  document.querySelector("#edit-ip").value = ip;
+  document.querySelector("#edit-mask").value = mask;
+  document.querySelector("#edit-vlan").value = vlan;
+  document.querySelector("#edit-status").value = status;
+}
+
+// Guardar cambios (ejecutar PowerShell con invoke)
+async function guardarCambios() {
+  const datos = {
+    nombre: document.querySelector("#edit-nombre").value,
+    ip: document.querySelector("#edit-ip").value,
+    mask: document.querySelector("#edit-mask").value,
+    vlan: document.querySelector("#edit-vlan").value
+  };
+
+  try {
+    await invoke("cambiar_config_puerto", { datos });
+    alert("Cambios aplicados correctamente");
+    cargarDatos();
+  } catch (e) {
+    alert("Error al aplicar cambios: " + e.message);
+  }
+}
+
 
 async function cambiarVlan() {
 
@@ -91,11 +105,5 @@ window.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", e => {
     e.preventDefault();
     cargarDatos();
-  });
-  // para cambiar VLAN
-  const cambiarVlanButton = document.querySelector("#cambiar-vlan-button");
-  cambiarVlanButton.addEventListener("click", e => {
-    e.preventDefault();
-    cambiarVlan();
   });
 });
