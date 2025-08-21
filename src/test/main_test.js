@@ -11,7 +11,7 @@ async function cargarDatos() {
 
     lineas.forEach(linea => {
     if (!linea.trim()) return;
-    const [nombre, ip, mask, vlan, status] = linea.split("|");
+    const [nombre, ip, mask, vlan, status, getaway] = linea.split("|");
 
     const fila = document.createElement("div");
     fila.classList.add("fila");
@@ -19,12 +19,14 @@ async function cargarDatos() {
     const btnEditar = document.createElement("Button")
     btnEditar.classList.add("btn-editar");
     btnEditar.innerHTML = `<img src="../assets/icone-config.png" alt="icono" width="20" height="20">`;
-    btnEditar.onclick = () => editarPuerto(nombre, ip, mask, vlan, status);
+    btnEditar.onclick = () => editarPuerto(nombre, ip, mask, vlan, status, getaway);
+    
 
     fila.innerHTML = `
       <div class="col">${nombre?.trim() || "—"}</div>
       <div class="col">${ip?.trim() || "—"}</div>
       <div class="col">${mask?.trim() || "—"}</div>
+      <div class="col">${getaway?.trim() || "—"}</div>
       <div class="col">${vlan?.trim() || "—"}</div>
       <div class="col estado">
         <span class="circulo ${status?.trim() === "Up" ? "verde" : "rojo"}"></span>
@@ -43,7 +45,7 @@ async function cargarDatos() {
 }
 
 // ----- Llenar card de edicion con el puerto seleccionado ------ //
-function editarPuerto(nombre, ip, mask, vlan, status) {
+function editarPuerto(nombre, ip, mask, vlan, status, getaway) {
   document.querySelector("#card-edicion").classList.remove("oculto");
 
   document.querySelector("#edit-nombre").value = nombre;
@@ -51,9 +53,10 @@ function editarPuerto(nombre, ip, mask, vlan, status) {
   document.querySelector("#edit-mask").value = mask;
   document.querySelector("#edit-vlan").value = vlan;
   document.querySelector("#edit-status").value = status;
+  document.querySelector("#edit-puerta-enlace").value = getaway;
 }
 
-// Guardar cambios (ejecutar PowerShell con invoke)
+// ----- Manda las modificaciones de los puertos a change_conf_port ------ //
 async function guardarCambios() {
   const datos = {
     nombre: document.querySelector("#edit-nombre").value,

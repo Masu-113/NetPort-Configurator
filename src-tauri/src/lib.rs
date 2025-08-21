@@ -1,7 +1,7 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
 async fn ejecutar_powershell() -> Result<String, String> {
-    let script_path = r"../src-ps1/get_network_info.ps1".to_string();
+    let script_path = "../src-ps1/get_network_info.ps1".to_string();
 
     let output = tauri::async_runtime::spawn_blocking(move || {
         std::process::Command::new("powershell.exe")
@@ -23,6 +23,7 @@ async fn ejecutar_powershell() -> Result<String, String> {
         let s = String::from_utf8_lossy(&output.stderr).to_string();
         println!("stderr text: {:?}", s);
         Err(s.trim().to_string())
+
     }  
 }
  
@@ -70,19 +71,23 @@ fn cambiar_config_puerto(datos: serde_json::Value) -> Result<(), String> {
     let mask = datos["mask"].as_str().unwrap_or("");
     let vlan = datos["vlan"].as_str().unwrap_or("");
 
+    println!("Datos enviados: nombre={}, ip={}, mask={}, vlan={}", nombre, ip, mask, vlan);
+
     let output = Command::new("powershell.exe")
         .arg("-ExecutionPolicy")
         .arg("Bypass")
-        .arg("-File")
-        .arg("../src-ps1/change_conf_port.ps1")
-        .arg("-nombre").arg(nombre)
-        .arg("-ip").arg(ip)
-        .arg("-mask").arg(mask)
-        .arg("-vlan").arg(vlan)
+        .arg("-NoProfile")
+        .arg("-Command")
+        .arg(format!(
+            "& '../src-ps1/change_conf_port.ps1' -nombre '{}' -ip '{}' -mask '{}' -vlan '{}'",
+            nombre, ip, mask, vlan
+        ))
         .output()
         .expect("Failed to execute command");
 
     if output.status.success() {
+        let success_message = String::from_utf8_lossy(&output.stdout);
+        println!("Salida del script: {}", success_message);
         Ok(())
     } else {
         let error_message = String::from_utf8_lossy(&output.stderr);

@@ -37,6 +37,7 @@
             <div class="col">Nombre</div>
             <div class="col">IP</div>
             <div class="col">Máscara</div>
+            <div class="col">Puerta Enlace</div>
             <div class="col">VLAN</div>
             <div class="col">Estado</div>
           </div>
@@ -49,27 +50,52 @@
         </div>
         <!-- Segunda card: formulario de edición -->
         <div id="card-edicion" class="card oculto">
-          <h2>Editar Puerto de Red</h2>
-          <form id="form-edicion" class="input-contai">
-
-            <input type="text" id="edit-nombre" readonly>
-            <label>Nombre del Puerto</label>
-            <div class="underline"></div>
-
-            <label>Dirección IP</label>
-            <input type="text" id="edit-ip">
-
-            <label>Máscara de Subred</label>
-            <input type="text" id="edit-mask">
-
-            <label>VLAN</label>
-            <input type="text" id="edit-vlan">
-
-            <label>Estado</label>
-            <input type="text" id="edit-status" readonly>
-
+          <h2 style="margin: 30px;">Editar Puerto de Red</h2>
+          <div id="form-edicion">
+            <div class="flex-row">
+              <div class="column">
+                <div class="group">
+                  <input type="text" id="edit-nombre" class="input">
+                  <span class="heightlight"></span>
+                  <span class="bar"></span>
+                  <label>Nombre del Puerto</label>
+                </div>
+                <div class="group">
+                  <input type="text" id="edit-ip" class="input">
+                  <span class="heightlight"></span>
+                  <span class="bar"></span>
+                  <label>Dirección IP</label>
+                </div>
+                  <div class="group">
+                  <input type="text" id="edit-mask" class="input">
+                  <span class="heightlight"></span>
+                  <span class="bar"></span>
+                  <label>Máscara de Subred</label>  
+                </div>
+              </div>
+                <div class="column">
+                  <div class="group">
+                  <input type="text" id="edit-vlan" class="input">
+                  <span class="heightlight"></span>
+                  <span class="bar"></span>
+                  <label>Vlan Id</label>
+                </div>
+                <div class="group">
+                  <input type="text" id="edit-status" class="input">
+                  <span class="heightlight"></span>
+                  <span class="bar"></span>
+                  <label>Estado</label>
+                </div> 
+                <div class="group">
+                  <input type="text" id="edit-puerta-enlace" class="input">
+                  <span class="heightlight"></span>
+                  <span class="bar"></span>
+                  <label>Puerta de Enlace</label>
+                </div> 
+              </div>
+            </div>
             <button type="button" id="btn-aplicar-cambios">Aplicar Cambios</button>
-          </form>
+          </div>
         </div>
       </section>
 

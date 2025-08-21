@@ -30,17 +30,6 @@ h1 {
   flex-wrap: wrap;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  transition: filter 0.75s ease;
-  cursor: pointer;
-}
-
-.logo:hover {
-  filter: drop-shadow(0 0 2em #24c8db);
-}
-
 a {
   font-weight: 500;
   color: #646cff;
@@ -311,51 +300,115 @@ a:hover {
   width: 30%;
 }
 
-/*card modificacion*/
-.input-container {
-  position: relative;
-  margin: 50px auto;
-  width: 200px;
-} 
+.form-edicion {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
 
-.input-container input[type="text"] {
-  font-size: 20px;
-  width: 100%;
+.group {
+ position: relative;
+ margin-bottom: 20px;
+}
+
+.input {
+ font-size: 16px;
+ padding: 10px 10px 10px 5px;
+ display: block;
+ width: 200px;
+ border: none;
+ border-bottom: 1px solid #515151;
+ background: transparent;
+}
+
+.input:focus {
+ outline: none;
+}
+
+label {
+ color: #999;
+ font-size: 18px;
+ font-weight: normal;
+ position: absolute;
+ left: 5px;
+ top: 10px;
+ transition: 0.2s ease all;
+ -moz-transition: 0.2s ease all;
+ -webkit-transition: 0.2s ease all;
+}
+
+.input:focus ~ label, .input:valid ~ label {
+ top: -20px;
+ font-size: 14px;
+ color: #5264AE;
+}
+
+.bar {
+ position: relative;
+ display: block;
+ width: 200px;
+}
+
+.bar:before, .bar:after {
+ content: '';
+ height: 2px;
+ width: 0;
+ bottom: 1px;
+ position: absolute;
+ background: #5264AE;
+ transition: 0.2s ease all;
+ -moz-transition: 0.2s ease all;
+ -webkit-transition: 0.2s ease all;
+}
+
+.bar:before {
+ left: 50%;
+}
+
+.bar:after {
+ right: 50%;
+}
+
+.input:focus ~ .bar:before, .input:focus ~ .bar:after {
+ width: 50%;
+}
+
+.highlight {
+ position: absolute;
+ height: 60%;
+ width: 100px;
+ top: 25%;
+ left: 0;
+ pointer-events: none;
+ opacity: 0.5;
+}
+
+.input:focus ~ .highlight {
+ animation: inputHighlighter 0.3s ease;
+}
+
+@keyframes inputHighlighter {
+ from {
+  background: #5264AE;
+ }
+
+ to {
+  width: 0;
+  background: transparent;
+ }
+}
+
+#btn-aplicar-cambios {
+  margin-top: 20px;
+  padding: 10px 30%;
   border: none;
-  border-bottom: 2px solid #ccc;
-  padding: 5px 0;
-  background-color: transparent;
-  outline: none;
-}
-
-.input-container label {
-  position: absolute;
-  top: 0;
-  left: 0;
-  color: #ccc;
-  transition: all 0.3s ease;
-  pointer-events: none;
-}
-
-.input-container input[type="text"]:focus ~ label,
-.input-container input[type="text"]:valid ~ label {
-  top: -20px;
+  background-color: #007bff;
+  color: white;
   font-size: 16px;
-  color: #333;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-.input-container .underline {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 2px;
-  width: 100%;
-  background-color: #333;
-  transform: scaleX(0);
-  transition: all 0.3s ease;
-}
-
-.input-container input[type="text"]:focus ~ .underline,
-.input-container input[type="text"]:valid ~ .underline {
-  transform: scaleX(1);
+btn-aplicar-cambios:hover {
+  background-color: #0056b3;
 }
