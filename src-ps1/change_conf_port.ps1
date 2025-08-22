@@ -1,9 +1,9 @@
 param(
-    [string]$nombre = "Ethernet 3",
-    [string]$ip = "192.168.97.10",
-    [string]$mask = "255.255.0.0",
-    [string]$vlan = "20",
-    [string]$gateway = "192.168.10.2"
+    [string]$nombre,
+    [string]$ip,
+    [string]$mask,
+    [string]$vlan,
+    [string]$gateway
 )
 
 # Mostrar los datos recibidos
