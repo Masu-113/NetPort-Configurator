@@ -6,11 +6,12 @@ param(
     [string]$gateway
 )
 
-# Mostrar los datos recibidos
+# Verificar los datos que estan llegando
 Write-Output "Modificacion del puerto: $nombre"
 Write-Output "Nueva IP: $ip"
 Write-Output "Nueva Mascara: $mask"
 Write-Output "Nuevo VLAN ID: $vlan"
+write-output "Nueva puerta de enlace: $gateway"
 
 try {
     Write-Output "Deshabilitando DHCP en la interfaz $nombre..."
@@ -20,7 +21,7 @@ try {
     Set-NetAdapterAdvancedProperty -Name $nombre -DisplayName "VLAN ID" -DisplayValue $vlan
 
     # Usar netsh para configurar la IP y la máscara
-    Write-Output "Configurando dirección IP y mascara usando netsh..."
+    Write-Output "Configurando direccion IP y mascara usando netsh..."
     $cmd = "netsh interface ip set address name=`"$nombre`" static $ip $mask $gateway"
     Invoke-Expression $cmd
 
@@ -35,8 +36,8 @@ $ipConfig = Get-NetIPAddress -InterfaceAlias $nombre
 Write-Output "Configuracion actual:"
 Write-Output "IP: $($ipConfig.IPAddress)"
 Write-Output "Mscara: $($ipConfig.PrefixLength)"
-Write-Output "VLAN ID: $(Get-NetAdapter -Name $nombre | Select-Object -ExpandProperty VLANID)"
-write-output "Puerta de Enlace: $($getaway)"
+Write-Output "VLAN ID: $($vlanID = ($adapter | Get-NetAdapterAdvancedProperty -DisplayName "VLAN ID" -ErrorAction SilentlyContinue).DisplayValue)"
+write-output "Puerta de Enlace: $($gateway)"
 
 # Salida del script
 exit 0
