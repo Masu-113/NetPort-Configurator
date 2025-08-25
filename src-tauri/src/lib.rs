@@ -1,6 +1,7 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 use std::path::PathBuf;
-use std::process::Command;
+use std::process::{Command, Stdio};
+use std::os::windows::process::CommandExt;
 
 #[tauri::command]
 async fn ejecutar_powershell() -> Result<String, String> {
@@ -8,7 +9,10 @@ async fn ejecutar_powershell() -> Result<String, String> {
 
     let output = tauri::async_runtime::spawn_blocking(move || {
         std::process::Command::new("powershell.exe")
-            .args(&["-ExecutionPolicy", "Bypass", "-File", script_path.to_str().unwrap()])
+            .args(&["-WindowStyle", "Hidden", "-File", script_path.to_str().unwrap()])
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .creation_flags(0x08000000)
             .output()
     })
     .await
@@ -35,21 +39,19 @@ fn cambiar_config_puerto(datos: serde_json::Value) -> Result<(), String> {
     let ip = datos["ip"].as_str().unwrap_or("");
     let mask = datos["mask"].as_str().unwrap_or("");
     let vlan = datos["vlan"].as_str().unwrap_or("");
+    let gateway = datos["gateway"].as_str().unwrap_or("");
 
-    println!("Datos enviados: nombre={}, ip={}, mask={}, vlan={}", nombre, ip, mask, vlan);
+    println!("Datos enviados: nombre={}, ip={}, mask={}, vlan={}, gateway={}", nombre, ip, mask, vlan, gateway);
     let script_path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../src-ps1/change_conf_port.ps1");
 
     let output = Command::new("powershell.exe")
-        .arg("-ExecutionPolicy")
-        .arg("Bypass")
-        .arg("-NoProfile")
-        .arg("-Command")
-        .arg(format!("& '{}' -nombre '{}' -ip '{}' -mask '{}' -vlan '{}'",
-            script_path.to_str().unwrap(),
-            nombre, ip, mask, vlan
-        ))
+        .args(&["-WindowStyle", "Hidden", "-File", script_path.to_str().unwrap()])
+        .args(&["-nombre", nombre, "-ip", ip, "-mask", mask, "-vlan", vlan, "-gateway", gateway])
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .creation_flags(0x08000000)
         .output()
-        .expect("Failed to execute command");
+        .expect("failed to execut command");
 
     if output.status.success() {
         let success_message = String::from_utf8_lossy(&output.stdout);
