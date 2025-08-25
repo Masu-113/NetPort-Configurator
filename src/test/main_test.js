@@ -38,7 +38,7 @@ async function cargarDatos() {
     contenedor.appendChild(fila);
   });
 
-    document.querySelector("#response-msg").textContent = "Datos cargados desde PowerShell";
+    document.querySelector("#response-msg").textContent = "Puertos cargados Correctamente.";
   } catch (e) {
     document.querySelector("#response-msg").textContent = "Error: " + e.message;
   }
@@ -56,14 +56,20 @@ function editarPuerto(nombre, ip, mask, vlan, status, getaway) {
   document.querySelector("#edit-puerta-enlace").value = getaway;
 }
 
-// ----- Manda las modificaciones de los puertos a change_conf_port ------ //
+// ----- Manda las modificaciones de los puertos a change_conf_port.ps1 ------ //
 async function guardarCambios() {
   const datos = {
     nombre: document.querySelector("#edit-nombre").value,
     ip: document.querySelector("#edit-ip").value,
     mask: document.querySelector("#edit-mask").value,
-    vlan: document.querySelector("#edit-vlan").value
+    vlan: document.querySelector("#edit-vlan").value,
+    gateway: document.querySelector("#edit-puerta-enlace").value
   };
+
+  if(!validar_datos(datos)){
+    alert("Completar todos los campos.");
+    return;
+  }
 
   try {
     console.log("Datos a enviar:", datos);
@@ -76,6 +82,24 @@ async function guardarCambios() {
   }
 }
 
+function validar_datos(datos){
+  const ipRegex = /\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/;
+  const ipMask = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
+
+  if(!datos.nombre || !datos.ip || !datos.mask || !datos.vlan || !datos.gateway){
+      return false;
+    }
+  if(!ipRegex.test(datos.ip)){
+      alert("La direccion ip no es valida.");
+      return false;
+  }
+  if(!ipMask.test(datos.mask)){
+      alert("La mascara que inserto no es valida.");
+      return false;
+  }
+  return true;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const btnAplicarCambios = document.querySelector("#btn-aplicar-cambios");
     if (btnAplicarCambios) {
@@ -84,35 +108,6 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("Botón de aplicar cambios no encontrado");
     }
 });
-
-// ------------------------------------------------------------------------------- //
-async function cambiarVlan() {
-
-  try {
-    const interfaceName = document.querySelector("#port-name").value;
-    const newVlanId = document.querySelector("#vlan-input").value;
-
-    const salida = await invoke("cambiar_vlan", { interface_name: interfaceName, new_vlan_id: newVlanId });
-    console.log("Salida de cambiar VLAN:", JSON.stringify(salida));
-    document.querySelector("#response-msg").textContent = "VLAN cambiado: " + salida;
-  } catch (e) {
-    document.querySelector("#response-msg").textContent = "Error: " + e.message;
-  }
-}
-
-function addform(){
-  const contenedor = document.getElementById("form-contenedor");
-  const cont_original = document.getElementById("form-original");
-  const clon = cont_original.cloneNode(true)
-  
-  const inputs = clon.querySelectorAll('input');
-  inputs.forEach(input => input.value = '');
-
-  const nuevoId = 'formulario-' + (document.querySelectorAll('#form-contenedor > div'.length +1));
-  clon.id = nuevoId
-
-  contenedor.appendChild(clon)
-}
 
 window.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector("#data-form");
