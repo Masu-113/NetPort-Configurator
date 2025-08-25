@@ -1,11 +1,3 @@
-html, body {
-  height: 100%;
-  font-family: var(--font-family);
-  font-size: var(--font-size);
-  line-height: var(--line-height);
-  color: var(--color);
-  background-color: var(--bg-color);
-}
 
 .container {
   min-height: 100vh;
@@ -24,8 +16,8 @@ h1 {
 }
 
 .row {
-  display: flex; /* Usar flexbox para alinear los elementos */
-  justify-content: center; /* Centrar elementos */
+  display: flex;
+  justify-content: center; 
   gap: 1.5rem;
   flex-wrap: wrap;
 }
@@ -274,32 +266,6 @@ a:hover {
   white-space: nowrap;
 }
 
-/* Anchos fijos por columna */
-.tabla-red th:nth-child(1),
-.tabla-red td:nth-child(1) {
-  width: 15%; /* Nombre */
-}
-
-.tabla-red th:nth-child(2),
-.tabla-red td:nth-child(2) {
-  width: 22%; /* IP */
-}
-
-.tabla-red th:nth-child(3),
-.tabla-red td:nth-child(3) {
-  width: 15%; /* Máscara */
-}
-
-.tabla-red th:nth-child(4),
-.tabla-red td:nth-child(4) {
-  width: 15%; /* VLAN */
-}
-
-.tabla-red th:nth-child(5),
-.tabla-red td:nth-child(5) {
-  width: 30%;
-}
-
 .form-edicion {
   padding: 20px;
   border: 1px solid #ccc;
@@ -332,12 +298,9 @@ label {
  position: absolute;
  left: 5px;
  top: 10px;
- transition: 0.2s ease all;
- -moz-transition: 0.2s ease all;
- -webkit-transition: 0.2s ease all;
 }
 
-.input:focus ~ label, .input:valid ~ label {
+.input:focus ~ label, .input ~ label {
  top: -20px;
  font-size: 14px;
  color: #5264AE;
