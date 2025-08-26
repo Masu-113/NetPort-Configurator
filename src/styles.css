@@ -363,7 +363,7 @@ label {
 
 #btn-aplicar-cambios {
   margin-top: 20px;
-  padding: 10px 30%;
+  padding: 10px 20%;
   border: none;
   background-color: #007bff;
   color: white;
@@ -372,8 +372,23 @@ label {
   cursor: pointer;
 }
 
-btn-aplicar-cambios:hover {
+#btn-aplicar-cambios:hover{
   background-color: #0056b3;
+}
+
+#btn-configurar-dhcp{
+  margin-top: 20px;
+  padding: 10px 8%;
+  border: none;
+  background-color: #009c00;
+  color: white;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#btn-configurar-dhcp:hover {
+  background-color: #017201;
 }
 
 /* --- Estilos para las notificaciones --- */

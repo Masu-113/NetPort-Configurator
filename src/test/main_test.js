@@ -22,7 +22,7 @@ async function cargarDatos() {
       btnEditar.classList.add("btn-editar");
       btnEditar.innerHTML = `<img src="../assets/icone-config.png" alt="icono" width="20" height="20">`;
       
-      // Evitar que el evento se propague
+      // Evita que la funcion buscar se ejecute si se utiliza al btn-editar
       btnEditar.onclick = (event) => {
         event.stopPropagation();
         editarPuerto(nombre, ip, mask, vlan, status, getaway);
@@ -52,8 +52,6 @@ async function cargarDatos() {
 
 // ----- Llenar card de edicion con el puerto seleccionado ------ //
 function editarPuerto(nombre, ip, mask, vlan, status, getaway) {
-  document.querySelector("#card-edicion").classList.remove("oculto");
-
   document.querySelector("#edit-nombre").value = nombre;
   document.querySelector("#edit-ip").value = ip;
   document.querySelector("#edit-mask").value = mask;
@@ -73,7 +71,6 @@ async function guardarCambios() {
   };
 
   if (!validar_datos(datos)) {
-    mostrarNotificacion("Completar todos los campos.", "error");
     return;
   }
 
@@ -88,20 +85,71 @@ async function guardarCambios() {
   }
 }
 
+// -------- Funcion para validar los datos ingresados a modificar ------- //
 function validar_datos(datos) {
-  const ipRegex = /\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/;
-  const ipMask = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
+  const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+  const soloNumeros = /^\d+$/;
 
   if (!datos.nombre || !datos.ip || !datos.mask || !datos.vlan || !datos.gateway) {
+    mostrarNotificacion("Llenar todos los campos", "error");
     return false;
   }
-  if (!ipRegex.test(datos.ip)) {
+
+  if (!ipRegex.test(datos.ip) || !validarIP(datos.ip)) {
     mostrarNotificacion("La dirección IP no es válida.", "error");
     return false;
   }
-  if (!ipMask.test(datos.mask)) {
+  if (!ipRegex.test(datos.gateway) || !validarIP(datos.gateway)) {
+    mostrarNotificacion("La puerta de enlace no es válida.", "error");
+    return false;
+  }
+
+  if (!soloNumeros.test(datos.vlan)) {
+    mostrarNotificacion("La VLAN debe ser un número sin letras.", "error");
+    return false;
+  }
+
+  if (!validarMascara(datos.mask)) {
     mostrarNotificacion("La máscara que insertó no es válida.", "error");
     return false;
+  }
+  return true;
+}
+
+// ---- Funcion para validar IP ----
+function validarIP(ip) {
+  const octetos = ip.split('.');
+  return octetos.length === 4 && octetos.every(o => {
+    const numero = parseInt(o, 10);
+    return numero >= 0 && numero <= 255;
+  });
+}
+
+// ---- Función para validar mascara ---- //
+function validarMascara(mascara) {
+  const octetos = mascara.split('.');
+  if (octetos.length !== 4) {
+    return false;
+  }
+
+  let mascaraBinaria = '';
+
+  for (let i = 0; i < octetos.length; i++) {
+    const octeto = parseInt(octetos[i], 10);
+    // validar rango
+    if (isNaN(octeto) || octeto < 0 || octeto > 255) {
+      return false;
+    }
+    mascaraBinaria += octeto.toString(2).padStart(8, '0');
+  }
+  // validar patrón de bits
+  let hayCeros = false;
+  for (let bit of mascaraBinaria) {
+    if (bit === '0') {
+      hayCeros = true;
+    } else if (hayCeros && bit === '1') {
+      return false;
+    }
   }
   return true;
 }
@@ -130,14 +178,14 @@ async function configurarPuertoADHCP() {
 
   try {
     const resultado = await invoke('configurar_puerto_dhcp', { nombre });
-    mostrarNotificacion(resultado, "success");
+    mostrarNotificacion("Se modifico el puerto a DHCP.", "success");
   } catch (error) {
     console.error("Error al configurar el puerto:", error);
     mostrarNotificacion("Ocurrió un error al intentar configurar el puerto a DHCP.", "error");
   }
 }
 
-// Función para mostrar notificaciones
+// ---------- Funcion para mostrar notificaciones ---------- //
 function mostrarNotificacion(mensaje, tipo) {
   const contenedor = document.getElementById("notification-container");
   const notificacion = document.createElement("div");
@@ -146,11 +194,20 @@ function mostrarNotificacion(mensaje, tipo) {
 
   contenedor.appendChild(notificacion);
 
-  // Eliminar la notificación después de un tiempo
   setTimeout(() => {
     contenedor.removeChild(notificacion);
-  }, 4000); // 4 segundos
+  }, 4000);
 }
+
+// ------------------------ Acciones de los botones ------------------------------- //
+document.addEventListener("DOMContentLoaded", () => {
+  const btnAplicarCambios = document.querySelector("#btn-configurar-dhcp");
+  if (btnAplicarCambios) {
+    btnAplicarCambios.addEventListener("click", confirmarConfiguracionDHCP);
+  } else {
+    console.error("Botón de aplicar cambios no encontrado");
+  }
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   const btnAplicarCambios = document.querySelector("#btn-aplicar-cambios");

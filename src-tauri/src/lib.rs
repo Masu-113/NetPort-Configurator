@@ -66,7 +66,7 @@ fn cambiar_config_puerto(datos: serde_json::Value) -> Result<(), String> {
 #[tauri::command]
 fn configurar_puerto_dhcp(nombre: &str) -> Result<(), String> {
     println!("Configurando el puerto '{}' en DHCP", nombre);
-    let script_path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../src-ps1/configurar_puerto_dhcp.ps1");
+    let script_path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../src-ps1/change_conf_dhcp.ps1");
 
     let output = Command::new("powershell.exe")
         .args(&["-WindowStyle", "Hidden", "-File", script_path.to_str().unwrap()])
