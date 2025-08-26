@@ -63,12 +63,35 @@ fn cambiar_config_puerto(datos: serde_json::Value) -> Result<(), String> {
     }
 }
 
+#[tauri::command]
+fn configurar_puerto_dhcp(nombre: &str) -> Result<(), String> {
+    println!("Configurando el puerto '{}' en DHCP", nombre);
+    let script_path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../src-ps1/configurar_puerto_dhcp.ps1");
+
+    let output = Command::new("powershell.exe")
+        .args(&["-WindowStyle", "Hidden", "-File", script_path.to_str().unwrap()])
+        .args(&["-nombre", nombre])
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .creation_flags(0x08000000)
+        .output()
+        .expect("failed to execute command");
+
+    if output.status.success() {
+        let success_message = String::from_utf8_lossy(&output.stdout);
+        println!("Salida del script: {}", success_message);
+        Ok(())
+    } else {
+        let error_message = String::from_utf8_lossy(&output.stderr);
+        Err(format!("Error al configurar el puerto en DHCP: {}", error_message))
+    }
+}
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![ejecutar_powershell, cambiar_config_puerto])
+        .invoke_handler(tauri::generate_handler![ejecutar_powershell, cambiar_config_puerto, configurar_puerto_dhcp])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
