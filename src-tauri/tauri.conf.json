@@ -27,11 +27,10 @@
     "active": true,
     "targets": "all",
     "icon": [
-      "icons/32x32.png",
-      "icons/128x128.png",
-      "icons/128x128@2x.png",
-      "icons/icon.icns",
-      "icons/icon.ico"
+      "icons/sunlight32x32.png",
+      "icons/sunlight128x128.png",
+      "icons/sunlight256x256.png",
+      "icons/arrow_load_update_sync_loading_reload_refresh_icon_267872 (1).ico"     
     ]
   }
 }
