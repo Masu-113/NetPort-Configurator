@@ -1,74 +1,94 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="../styles.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tauri App</title>
-    <script type="module" src="/test/main_test.js" defer></script>
-  </head>
+    <script type="module" src="../main.js" defer></script>
+</head>
 
-  <body>
-    <div class="dashboard">
-      <nav class="sidebar">
-        <ul>  
-          <li><a href="#">Inicio</a></li>
-          <li><a href="#">Perfil</a></li>
-          <li><a href="#">Configuración</a></li>
-        </ul>
-      </nav>
-      <section class="content">
+<body>
+  <div id="notification-container" class="notification-container"></div>
+  <div id="confirmation-container"></div>
+    <div class="spinner"></div>
+    <img src="/assets/fondo_exagonos.jpg" alt="fondo" id="fondo">
+    <section class="content">
         <main class="container">
-      <form class="row" id="data-form">
-        <div id="form-original" class="card flex-row">
-          <label for="Nombre">Nombre: </label>
-          <input id="port-name" placeholder="Nombre del puerto" readonly/>
-          
-          <label for="Puerto"> Puerto: </label>
-          <input id="ip-address" placeholder="IP" readonly/>
-          
-          <label for="mask">Mask:</label>
-          <input id="subnet-mask" placeholder="Máscara" readonly/>
-          
-          <label for="vlan">VLAN Id: </label>
-          <input id="vlan" placeholder="VLAN" readonly/>
+            <form class="row" id="data-form">
+                <div id="form-original" class="card">
+                    <h2 class="titulo" style="margin: 30px; font-weight: bold ;">Información de los Puertos de Red</h2>
+                    <!-- Encabezado de la tabla -->
+                    <div class="fila encabezado" id="encabezado-tabla">
+                        <div class="col">Nombre</div>
+                        <div class="col">IP</div>
+                        <div class="col">Máscara</div>
+                        <div class="col">Puerta Enlace</div>
+                        <div class="col">VLAN</div>
+                        <div class="col">Estado</div>
+                    </div>
 
-          <button type="submit">Buscar</button>
-        </div>
-        <div id="form-original" class="card flex-row">
-          <label for="vlan-input">Nuevo VLAN ID: </label>
-          <input id="vlan-input" placeholder="Ingrese nuevo VLAN ID" />
-          <button id="cambiar-vlan-button">Cambiar VLAN</button>
-          <hr>
-          <label for="ip-input">Nuevo Ip:</label>
-          <input id="ip-input" placeholder="0.0.0.0" />
-          <button id="cambiar-ip-button">Cambiar IP </button>
-
-          <label for="input"></label>
-        </div>
-      </section>
-    </div>
-
-      </form>
-      <div class="loader">
-        <div class="circle">
-          <div class="dot"></div>
-          <div class="outline"></div>
-        </div>
-        <div class="circle">
-          <div class="dot"></div>
-          <div class="outline"></div>
-        </div>
-        <div class="circle">
-          <div class="dot"></div>
-          <div class="outline"></div>
-        </div>
-        <div class="circle">
-          <div class="dot"></div>
-          <div class="outline"></div>
-        </div>
-      </div>
-      <p id="response-msg"></p>
-    </main>
-  </body>
+                    <div id="contenedor-entradas" class="tabla-puertos">
+                        <!-- aqui se insertan las filas generadas del js -->
+                    </div>
+                    <button type="submit" class="btn-buscar">Buscar</button>
+                    <p id="response-msg"></p>
+                </div>
+                <!-- Segunda card: formulario de edicion -->
+                <div id="card-edicion" class="card oculto">
+                    <h2 style="margin: 30px;">Editar Puerto de Red</h2>
+                    <div id="form-edicion">
+                        <div class="flex-row">
+                            <div class="column">
+                                <div class="group">
+                                    <input type="text" id="edit-nombre" class="input" readonly>
+                                    <span class="heightlight"></span>
+                                    <span class="bar"></span>
+                                    <label>Nombre del Puerto</label>
+                                </div>
+                                <div class="group">
+                                    <input type="text" id="edit-ip" class="input">
+                                    <span class="heightlight"></span>
+                                    <span class="bar"></span>
+                                    <label>Dirección IP</label>
+                                </div>
+                                <div class="group">
+                                    <input type="text" id="edit-mask" class="input">
+                                    <span class="heightlight"></span>
+                                    <span class="bar"></span>
+                                    <label>Máscara de Subred</label>  
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="group">
+                                    <input type="text" id="edit-vlan" class="input">
+                                    <span class="heightlight"></span>
+                                    <span class="bar"></span>
+                                    <label>Vlan Id</label>
+                                </div>
+                                <div class="group">
+                                    <input type="text" id="edit-status" class="input" readonly>
+                                    <span class="heightlight"></span>
+                                    <span class="bar"></span>
+                                    <label>Estado</label>
+                                </div> 
+                                <div class="group">
+                                    <input type="text" id="edit-puerta-enlace" class="input">
+                                    <span class="heightlight"></span>
+                                    <span class="bar"></span>
+                                    <label>Puerta de Enlace</label>
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="flex-row">
+                            <button type="button" id="btn-aplicar-cambios" class="btn btn-primary">Aplicar Cambios</button>
+                            <button type="button" id="btn-configurar-dhcp" class="btn btn-warning">Configurar a DHCP</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </main>
+    </section>
+</body>
 </html>
