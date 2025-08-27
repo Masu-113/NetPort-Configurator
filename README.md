@@ -74,7 +74,42 @@ Antes de ejecutar o compilar el proyecto, asegúrate de tener instalado:
 
 ---
 
-## 「Uso」
+## 「Modificar Iconos de la Aplicacion」
+
+La aplicacion de tauri por defecto ya trae iconos, para ocupar iconos personalizados:
+
+1. **Descargar una imagen `.ico`**
+
+2. **Pagina de donde saque el icono de mi aplicacion: [icon-icons.com](https://icon-icons.com/).**
+
+3. **Ocupar el comando:**
+    ```bash
+    npm run tauri icon --source ./src-tauri/icons/nombre_archivo.ico
+
+Este comando selecciona una imagen.ico personalizada que se haya descargado o creado, crea varias versiones del icono en distintos tamaños para utilizarlos en la aplicacion, genera un archivo `.icns` y carpetas con iconos para android y ios.
+
+4. **Una vez generados los iconos que se utilizaran se debe de modificar el archivo `tuari.conf.json`**
+    ```bash
+    {
+        "bundle": {
+            "icon": [
+            "icons/32x32.png",
+            "icons/128x128.png",
+            "icons/128x128@2x.png",
+            "icons/icon.icns",
+            "icons/icon.ico"
+            ]
+        }
+    }
+
+5. **Se recomienda que la salida coincida al menos con tauri icon: `32x32.png` , `128x128.png` , `128x128@2x.png` y `icon.png.` .**
+
+6. **En caso de crear uno mismo los iconos consultar documentacion de Tauri: [Creando iconos manualmente](https://v2.tauri.app/develop/icons/#creating-icons-manually).**
+
+
+---
+
+## 「Recomendaciones de uso」
 
 1. **Ejecucion con permisos elevados**
 
