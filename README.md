@@ -1,6 +1,6 @@
 <!-- Logo del proyecto -->
 <p align="center">
-  <img src="src\assets\logo_NetPort_big.png" alt="NetPort Configurator Logo" width="250">
+  <img src="src\assets\logo_NetPort_big.png" alt="NetPort Configurator Logo" width="350">
 </p>
 
 <h1 align="center">NetPort Configurator</h1>
@@ -181,9 +181,9 @@ Para compilar si esta utilizando Linux o Mac, seguir la [documentación oficial 
             ]
         }
 
-    - **Al realizar esto cuando se empaqueta la aplicacion: `npm run tauri build` , el instalador generara una carpeta junto con la aplicacion con los archivos del programa, si esto no se hace la aplicacion buscara la ruta en la que se encuentran estos archivos y no los encontrara y retornara error.**
+    2. **Al realizar esto cuando se empaqueta la aplicacion: `npm run tauri build` , el instalador generara una carpeta junto con la aplicacion con los archivos del programa, si esto no se hace la aplicacion buscara la ruta en la que se encuentran estos archivos y no los encontrara y retornara error.**
 
-    2. **En caso de que no se quieran generar esos archivos junto la aplicacion (Como hizo NetPort) añadir las funcionamiento de estas en el `lib.rs` y eliminar el `resources:[]` añadido anteriormente al archivo `tauiri.conf.json` , asi ya no es necesario crear la carpeta con archivos junto la aplicacion y no se corre el riesgo de que los usuarios manipuelen el contenido de estos archivos.**
+    3. **En caso de que no se quieran generar esos archivos junto la aplicacion (Como hizo NetPort) añadir las funcionamiento de estas en el `lib.rs` y eliminar el `resources:[]` añadido anteriormente al archivo `tauiri.conf.json` , asi ya no es necesario crear la carpeta con archivos junto la aplicacion y no se corre el riesgo de que los usuarios manipuelen el contenido de estos archivos.**
 
 
 
@@ -213,3 +213,4 @@ Para compilar si esta utilizando Linux o Mac, seguir la [documentación oficial 
     ├── package.json        # Configuración del proyecto y scripts npm
     └── README.md           # Documentación del proyecto
 
+---
