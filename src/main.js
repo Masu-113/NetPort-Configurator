@@ -110,7 +110,7 @@ function validar_datos(datos) {
     return false;
   }
 
-  if (datos.gateway && !ipRegex.test(datos.gateway)) {
+  if (datos.gateway && !ipRegex.test(datos.gateway) && datos.gateway !== null && datos.gateway !== "" && datos.gateway.toLowerCase() !== "null") {
     mostrarNotificacion("La puerta de enlace no es válida.", "error");
     return false;
   }
