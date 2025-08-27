@@ -11,14 +11,16 @@
 
 <body>
   <div id="notification-container" class="notification-container"></div>
+  <div id="confirmation-container"></div>
     <div class="spinner"></div>
+    <img src="/assets/fondo_exagonos.jpg" alt="fondo" id="fondo">
     <section class="content">
         <main class="container">
             <form class="row" id="data-form">
                 <div id="form-original" class="card">
-                    <h2 class="titulo">Información de los Puertos de Red</h2>
+                    <h2 class="titulo" style="margin: 30px; font-weight: bold ;">Información de los Puertos de Red</h2>
                     <!-- Encabezado de la tabla -->
-                    <div class="fila encabezado">
+                    <div class="fila encabezado" id="encabezado-tabla">
                         <div class="col">Nombre</div>
                         <div class="col">IP</div>
                         <div class="col">Máscara</div>
@@ -33,7 +35,7 @@
                     <button type="submit" class="btn-buscar">Buscar</button>
                     <p id="response-msg"></p>
                 </div>
-                <!-- Segunda card: formulario de edición -->
+                <!-- Segunda card: formulario de edicion -->
                 <div id="card-edicion" class="card oculto">
                     <h2 style="margin: 30px;">Editar Puerto de Red</h2>
                     <div id="form-edicion">
