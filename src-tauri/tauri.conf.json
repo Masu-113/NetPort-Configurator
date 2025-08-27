@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "tauri-app",
+  "productName": "NetPort-app",
   "version": "0.1.0",
-  "identifier": "com.tauriapp",
+  "identifier": "com.NetPort",
   "build": {
     "frontendDist": "../src"
   },
@@ -10,7 +10,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "Ideay-app",
+        "title": "NetPort-app",
         "width": 800,
         "height": 600,
         "url": "views/index.html",
@@ -27,10 +27,16 @@
     "active": true,
     "targets": "all",
     "icon": [
-      "icons/sunlight32x32.png",
-      "icons/sunlight128x128.png",
-      "icons/sunlight256x256.png",
-      "icons/arrow_load_update_sync_loading_reload_refresh_icon_267872 (1).ico"     
+      "icons/Squeare30x30Logo.png",
+      "icons/Squeare44x44Logo.png",
+      "icons/Squeare71x71Logo.png",
+      "icons/Squeare89x89Logo.png",
+      "icons/Squeare107x107Logo.png",
+      "icons/Squeare142x142Logo.png",
+      "icons/Squeare150x150Logo.png",
+      "icons/Squeare284x284Logo.png",
+      "icons/Squeare310x310Logo.png",
+      "icons/ethernet.ico"     
     ]
   }
 }
