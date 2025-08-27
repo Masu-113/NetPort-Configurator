@@ -1,6 +1,6 @@
 <!-- Logo del proyecto -->
 <p align="center">
-  <img src="src\assets\logo_NetPort_big.png" alt="NetPort Configurator Logo" width="150">
+  <img src="src\assets\logo_NetPort_big.png" alt="NetPort Configurator Logo" width="250">
 </p>
 
 <h1 align="center">NetPort Configurator</h1>
