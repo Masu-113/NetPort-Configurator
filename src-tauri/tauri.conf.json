@@ -26,11 +26,6 @@
   "bundle": {
     "active": true,
     "targets": "all",
-    "resources": [
-      "../src-ps1/get_network_info.ps1",
-      "../src-ps1/change_conf_port.ps1",
-      "../src-ps1/change_conf_dhcp.ps1"
-    ],
     "icon": [
       "icons/Squeare30x30Logo.png",
       "icons/Squeare44x44Logo.png",
