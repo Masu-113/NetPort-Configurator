@@ -106,7 +106,6 @@ Este comando selecciona una imagen.ico personalizada que se haya descargado o cr
 
 6. **En caso de crear uno mismo los iconos consultar documentacion de Tauri: [Creando iconos manualmente](https://v2.tauri.app/develop/icons/#creating-icons-manually).**
 
-
 ---
 
 ## 「Recomendaciones de uso」
@@ -142,6 +141,13 @@ Generar ejecutable para Windows:
     
     npm run tauri build
 
+Compilacion cruzada
+
+
+    cargo-xwin.exe rustc --target x86_64-pc-windows-msvc
+
+Este comando realiza una compilación cruzada de un proyecto Rust para el x86_64-pc-windows-msvc
+
 El archivo resultante estara en:
     
     
@@ -153,6 +159,33 @@ Dentro de la carpeta **bundle** estaran dos carpetas:
 - Carpeta `nsis` que tiene el archivo ejecutable en `.exe`
 
 Para compilar si esta utilizando Linux o Mac, seguir la [documentación oficial de Tauri](https://v2.tauri.app/es/distribute/windows-installer/#build-windows-apps-on-linux-and-macos).
+
+- **Notas al realizar el empaquetamiento:**
+
+    1. **Al utilizar archivos externos como: `.ps1` se debe de modificar el `tauri.conf.json` de la siguiente manera:**
+        ```bash
+        "bundle": {
+        "active": true,
+        "targets": "all",
+        "resources": [
+            "../src-ps1/get_network_info.ps1",
+            "../src-ps1/change_conf_port.ps1",
+            "../src-ps1/change_conf_dhcp.ps1"
+        ],
+        "icon": [
+            "icons/32x32.png",
+            "icons/128x128.png",
+            "icons/128x128@2x.png",
+            "icons/icon.icns",
+            "icons/icon.ico"     
+            ]
+        }
+
+    - **Al realizar esto cuando se empaqueta la aplicacion: `npm run tauri build` , el instalador generara una carpeta junto con la aplicacion con los archivos del programa, si esto no se hace la aplicacion buscara la ruta en la que se encuentran estos archivos y no los encontrara y retornara error.**
+
+    2. **En caso de que no se quieran generar esos archivos junto la aplicacion (Como hizo NetPort) añadir las funcionamiento de estas en el `lib.rs` y eliminar el `resources:[]` añadido anteriormente al archivo `tauiri.conf.json` , asi ya no es necesario crear la carpeta con archivos junto la aplicacion y no se corre el riesgo de que los usuarios manipuelen el contenido de estos archivos.**
+
+
 
 ---
 
