@@ -3,6 +3,8 @@
   <img src="src\assets\logo_NetPort_big.png" alt="NetPort Configurator Logo" width="350">
 </p>
 
+---
+
 <h1 align="center">NetPort Configurator</h1>
 
 <p align="center">
@@ -29,12 +31,13 @@ Esta herramienta permite a los administradores y técnicos de redes cambiar ráp
 - **Dirección IP**
 - **Máscara de subred**
 - **Puerta de enlace**
+- **DHCP**
 
 Incluye scripts **PowerShell (.ps1)** integrados que se ejecutan con permisos elevados para realizar las configuraciones directamente en el sistema.
 
 ---
 
-## 「Características」
+## Características
 
 - Visualización de puertos de red disponibles en el equipo.
 - Configuración rápida de VLAN ID, IP, máscara y gateway.
@@ -45,7 +48,7 @@ Incluye scripts **PowerShell (.ps1)** integrados que se ejecutan con permisos el
 
 ---
 
-## 「Requisitos previos」
+## Requisitos previos
 
 Antes de ejecutar o compilar el proyecto, asegúrate de tener instalado:
 
@@ -58,7 +61,7 @@ Antes de ejecutar o compilar el proyecto, asegúrate de tener instalado:
 
 ---
 
-## 「Instalación para desarrollo」
+## Instalación para desarrollo
 
 1. **Clonar el repositorio**
    ```bash
@@ -74,7 +77,7 @@ Antes de ejecutar o compilar el proyecto, asegúrate de tener instalado:
 
 ---
 
-## 「Modificar Iconos de la Aplicacion」
+## Modificar Iconos de la Aplicacion
 
 La aplicacion de tauri por defecto ya trae iconos, para ocupar iconos personalizados:
 
@@ -108,7 +111,7 @@ Este comando selecciona una imagen.ico personalizada que se haya descargado o cr
 
 ---
 
-## 「Recomendaciones de uso」
+## Recomendaciones de uso
 
 1. **Ejecucion con permisos elevados**
 
@@ -130,11 +133,12 @@ Ejemplos:
 - Seleccionar puerto de red.
 - Ver VLAN ID actual.
 - Modificar IP, máscara y puerta de enlace.
+- Eliminar configuraciones realizadas a un puerto y configurarlo a defecto en DHCP
 - Guardar y aplicar cambios mediante scripts .ps1.
 
 ---
 
-## 「Compilación para distribución」
+## Compilación para distribución
 
 Generar ejecutable para Windows:
 
@@ -189,19 +193,34 @@ Para compilar si esta utilizando Linux o Mac, seguir la [documentación oficial 
 
 ---
 
-## 「Notas sobre permisos elevados」
+## Notas sobre la aplicacion.
 
-- La aplicacion utiliza scripts de `Powershell` que requieren permisos de Administrador.
-- Para evitar que se soliciten credenciales cada vez que se utilice la aplicacion, se recomienda:
+1. **Rutas a archivos externos.**
+
+    - Se recomienda que al declarara la ruta del archivo que se manda a llamar en el lib.rs sean declaradas de la siguiente manera:
+        ```bash
+        let script_path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../ruta_del_archivo");
     
-    1. creat un acceso directo con `runas`.
-    2. configurar el almacenamiento seguro de credenciales de Windows.
+    - Ya que al empaquetar el proyecto la aplicacion al ejecutar esa funcion buscara el archivo en la ruta en que se especifico y sino la encuentra mostrara error (Esto solo si el instalador crea los archivos junto el aplicativo).
 
-- Importante: la manipulacion de configuraciones de red puede afectar la conectividad del sistema, *Usar con precaucion*.
+2. **Permisos elevados.**
+
+    - Se recomienda instalar la aplicacion en el disco: `C:\` para evitar errores al querer ejecutarla con el usuario administrador estando en otro usuario que no tenga estos privilegios. 
+
+    - La aplicacion utiliza scripts de `Powershell` que requieren permisos de Administrador.
+
+    - Para evitar que se soliciten credenciales cada vez que se utilice la aplicacion, se recomienda:
+    
+        1. creat un acceso directo con `runas`.
+        2. configurar el almacenamiento seguro de credenciales de Windows.
+
+    - Importante: la manipulacion de configuraciones de red puede afectar la conectividad del sistema, *Usar con precaucion*.
+
+    - Revisar el manual de usuario que brinda NetPort: [Manual de Usuario](documentacion\ManualDeUsuario-NetPort.pdf).
 
 ---
 
-## 「Estructura del Proyecto」
+## Estructura del Proyecto.
 
     
     ├── src/                # Archivos HTML, CSS y JS de la interfaz
