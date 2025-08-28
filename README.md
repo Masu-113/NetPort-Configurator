@@ -216,7 +216,7 @@ Para compilar si esta utilizando Linux o Mac, seguir la [documentación oficial 
 
     - Importante: la manipulacion de configuraciones de red puede afectar la conectividad del sistema, *Usar con precaucion*.
 
-    - Revisar el manual de usuario que brinda NetPort: [Manual de Usuario](documentacion\ManualDeUsuario-NetPort.pdf).
+    - Revisar el manual de usuario que brinda NetPort: [Manual de Usuario](https://github.com/Masu-113/NetPort/blob/msuarez/documentacion/ManualDeUsuario-NetPort.pdf).
 
 ---
 
