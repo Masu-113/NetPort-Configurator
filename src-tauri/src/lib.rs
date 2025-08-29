@@ -1,6 +1,7 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-use std::process::{Command, Stdio};
 use std::os::windows::process::CommandExt;
+use std::process::{Command, Stdio};
+use tauri::Manager;
 
 #[tauri::command]
 async fn ejecutar_powershell() -> Result<String, String> {
@@ -58,7 +59,13 @@ async fn ejecutar_powershell() -> Result<String, String> {
 
     let output = tauri::async_runtime::spawn_blocking(move || {
         Command::new("powershell.exe")
-            .args(&["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", script])
+            .args(&[
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-Command",
+                script,
+            ])
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .creation_flags(0x08000000)
@@ -214,16 +221,34 @@ fn configurar_puerto_dhcp(nombre: &str) -> Result<(), String> {
         Ok(())
     } else {
         let error_message = String::from_utf8_lossy(&output.stderr);
-        Err(format!("Error al configurar el puerto en DHCP: {}", error_message))
+        Err(format!(
+            "Error al configurar el puerto en DHCP: {}",
+            error_message
+        ))
     }
 }
-
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_single_instance::init(|app, _event, _payload| {
+            // Intenta obtener la ventana principal
+            if let Some(main_window) = app.get_webview_window("main") {
+                // Restaura la ventana si está minimizada
+                let _ = main_window.show();
+                let _ = main_window.set_focus();
+            }
+        }))
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![ejecutar_powershell, cambiar_config_puerto, configurar_puerto_dhcp])
+        .invoke_handler(tauri::generate_handler![
+            ejecutar_powershell,
+            cambiar_config_puerto,
+            configurar_puerto_dhcp
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
+
+
+
+
