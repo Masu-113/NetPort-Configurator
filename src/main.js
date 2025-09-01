@@ -234,6 +234,23 @@ function debounce(func, wait){
 }
 
 // ------------------------ Acciones de los botones ------------------------------- //
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('toggleBtn').addEventListener('click', function() {
+        var sidebar = document.getElementById('sidebar');
+        var navMenu = document.getElementById('nav-menu');
+
+        sidebar.classList.toggle('collapsed');
+        
+        if(navMenu){
+          navMenu.classList.toggle('collapsed');
+        }
+        else{
+          console.error("Elemento nav-menu no encontrado");
+        }
+    });
+});
+
+
 document.addEventListener("DOMContentLoaded", () => {
   const btnAplicarCambios = document.querySelector("#btn-configurar-dhcp");
   if (btnAplicarCambios) {
