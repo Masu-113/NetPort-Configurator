@@ -1,6 +1,6 @@
 <!-- Logo del proyecto -->
 <p align="center">
-  <img src="https://via.placeholder.com/150" alt="NetPort Configurator Logo" width="150">
+  <img src="src/assets/LogoNetPot.png" alt="NetPort Configurator Logo" width="150">
 </p>
 
 <h1 align="center">NetPort Configurator</h1>
