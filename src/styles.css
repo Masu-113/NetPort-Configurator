@@ -1,11 +1,10 @@
 #fondo {
-    position: relative; 
+    position: fixed; 
     top: 0;
     left: 0;
     width: 100%; 
     height: 100%; 
     overflow: hidden;
-    z-index: 1;
 }
 
 #fondo img {
@@ -15,7 +14,22 @@
     position: absolute; 
     top: 0; 
     left: 0;
-    z-index: -1; 
+}
+
+.content{
+  background-image: z;
+}
+
+#logo{
+  width: 120px;
+  height: auto;
+  transition-property: transform;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+} 
+
+#logo:hover{
+  transform: scale(1.1);
 }
 
 #toggleBtn{
@@ -25,25 +39,27 @@
   border-radius: 20px;
   font-size: 16px;
   padding: 4px 9px;
+  font-weight: 700;
 }
 
 #toggleBtn:hover{
   background-color: #333333;
   cursor: pointer;
 }
+
 .sidebar{
   position: fixed;
   top: 0;
   left: 0;
   height: 100%;
   width: 250px;
-  background-color: #fff;
+  background-color: #ffffff;
   color: var(--text-light);
   transition: width 0.3s ease;
   background: 0.3s ease, color 0.3s ease;
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
   overflow: hidden;
-  display: flex;
+
   flex-direction: column;
   justify-content: space-between;
   z-index: 1000;
@@ -56,6 +72,16 @@
 
 .sidebar.collapsed{
   width: 65px;
+}
+
+
+.footer{
+  padding: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-light);
+  color: #000000;
+  border-top: 1px solid #515151;
 }
 
 .sidebar .header{
@@ -72,11 +98,19 @@
   display:none
 }
 
+.nav-list{
+  height: 750px;
+  justify-content:left;
+  list-style-type: none;
+  justify-content: center;
+}
+
 .sidebar nav ul li a {
     color: var(--text-light);
     text-decoration: none; 
     display: block; 
     padding: 15px 20px; 
+    color: #000000;
 }
 
 .sidebar.nav ul li a:hover {
