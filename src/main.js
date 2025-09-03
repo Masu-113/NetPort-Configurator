@@ -20,13 +20,17 @@ async function cargarDatos() {
       const btnEditar = document.createElement("button");
       btnEditar.type = "button";
       btnEditar.classList.add("btn-editar");
-      btnEditar.innerHTML = `<img src="../assets/icone-config.png" alt="icono" width="20" height="20">`;
+      btnEditar.innerHTML = `<img src="../assets/icone-config.png" alt="icono" width="30" height="30">`;
       
       // Evita que la funcion buscar se ejecute si se utiliza al btn-editar
       btnEditar.onclick = (event) => {
         event.stopPropagation();
         editarPuerto(nombre, ip, mask, vlan, status, getaway);
       };
+
+      if (document.body.classList.contains('dark-mode')) {
+        btnEditar.classList.add('dark-mode');
+      }
 
       fila.innerHTML = `
         <div class="col">${nombre?.trim() || "—"}</div>
@@ -52,12 +56,14 @@ async function cargarDatos() {
 
 // ----- Llenar card de edicion con el puerto seleccionado ------ //
 function editarPuerto(nombre, ip, mask, vlan, status, getaway) {
-  document.querySelector("#edit-nombre").value = nombre;
-  document.querySelector("#edit-ip").value = ip;
-  document.querySelector("#edit-mask").value = mask;
-  document.querySelector("#edit-vlan").value = vlan;
-  document.querySelector("#edit-status").value = status;
-  document.querySelector("#edit-puerta-enlace").value = getaway;
+  localStorage.setItem("nombre", nombre);
+  localStorage.setItem("ip", ip);
+  localStorage.setItem("mask", mask);
+  localStorage.setItem("vlan", vlan);
+  localStorage.setItem("status", status);
+  localStorage.setItem("getaway", getaway);
+  
+  window.location.href = "/views/change_port.html";
 }
 
 // ----- Manda las modificaciones de los puertos a change_conf_port.ps1 ------ //
@@ -76,10 +82,16 @@ async function guardarCambios() {
 
   try {
     console.log("Datos a enviar:", datos);
-    await invoke("cambiar_config_puerto", { datos });
-    mostrarNotificacion("Cambios aplicados correctamente", "success");
-    cargarDatos();
-  } catch (e) {
+    const resultado = await invoke("cambiar_config_puerto", { datos });
+
+    // Verificar si el resultado contiene un mensaje de error
+    if (resultado.includes("La operación solicitada requiere elevación")) {
+      mostrarNotificacion("Error: " + resultado, "error");
+    } else {
+      mostrarNotificacion("Cambios aplicados correctamente", "success");
+      cargarDatos();
+    }
+    } catch (e) {
     console.log("Error al aplicar cambios: ", e);
     mostrarNotificacion("Error al aplicar cambios: " + e.message, "error");
   }
@@ -276,4 +288,39 @@ window.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     cargarDatos();
   });
+});
+
+// -------- funcion para el modo oscuro -------- //
+document.addEventListener('DOMContentLoaded', () => {
+    const toggleButton = document.getElementById('darkModeToggle');
+
+    // Comprobar el estado del modo oscuro en localStorage
+    if (localStorage.getItem('dark-mode') === 'enabled') {
+        document.body.classList.add('dark-mode');
+        document.querySelector('.sidebar').classList.add('dark-mode');
+        document.querySelectorAll('.nav-list li a').forEach(link => link.classList.add('dark-mode'));
+        document.querySelectorAll('.card').forEach(card => card.classList.add('dark-mode'));
+        document.querySelectorAll('.flex-row input').forEach(input => input.classList.add('dark-mode'));
+        document.querySelectorAll('.btn-buscar, #btn-aplicar-cambios, #btn-configurar-dhcp, .btn-editar').forEach(btn => btn.classList.add('dark-mode'));
+        document.querySelectorAll('.notification').forEach(notification => notification.classList.add('dark-mode'));
+        document.querySelector('.footer').classList.add('dark-mode');
+    }
+
+    toggleButton.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        document.querySelector('.sidebar').classList.toggle('dark-mode');
+        document.querySelectorAll('.nav-list li a').forEach(link => link.classList.toggle('dark-mode'));
+        document.querySelectorAll('.card').forEach(card => card.classList.toggle('dark-mode'));
+        document.querySelectorAll('.flex-row input').forEach(input => input.classList.toggle('dark-mode'));
+        document.querySelectorAll('.btn-buscar, #btn-aplicar-cambios, #btn-configurar-dhcp, .btn-editar').forEach(btn => btn.classList.toggle('dark-mode'));
+        document.querySelectorAll('.notification').forEach(notification => notification.classList.toggle('dark-mode'));
+        document.querySelector('.footer').classList.toggle('dark-mode');
+
+        // Guardar la preferencia en localStorage
+        if (document.body.classList.contains('dark-mode')) {
+            localStorage.setItem('dark-mode', 'enabled');
+        } else {
+            localStorage.setItem('dark-mode', 'disabled');
+        }
+    });
 });
