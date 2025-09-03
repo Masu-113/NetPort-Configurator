@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="../styles.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="../main.js" defer></script>
+</head>
+
+<body>
+  <div id="notification-container" class="notification-container"></div>
+  <div id="confirmation-container"></div>
+    <div class="spinner"></div>
+    <img src="/assets/fondo_exagonos.jpg" alt="fondo" id="fondo">
+    <div class="sidebar" id="sidebar">
+        <div class="header">
+            <button class="toggle-btn" id="toggleBtn">☰</button>
+            <img src="/assets/logoNetPort.png" alt="logoNetPort" id="logo">
+        </div>
+        
+        <nav class="nav-menu" id="nav-menu">
+            <ul class="nav-list">
+                <li><a href="/views/index.html" id="nav-inicio" class="active"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="/views/cambios.html" id="nav-configuracion"><i class="fas fa-cog"></i> Configuración</a></li>
+                <li><a href="#" id="nav-acerca-de"><i class="fas fa-info-circle"></i> Acerca de</a></li>
+                <label class="darkModeToggle">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="slider"></span>
+                </label>
+            </ul>
+        <div class="footer">
+            <p>&copy; 2025 NetPort-Configurator. Todos los derechos reservados.</p>
+        </div>
+    </div>
+    
+    <section class="content">
+        <main class="container">
+            <form class="row" id="data-form">
+                
+                <!-- Segunda card: formulario de edicion -->
+                <div id="card-edicion" class="card oculto">
+                    <h2 style="margin: 30px;">Editar Puerto de Red</h2>
+                    <div id="form-edicion">
+                        <div class="flex-row">
+                            <div class="column">
+                                <div class="group">
+                                    <input type="text" id="edit-nombre" class="input" readonly>
+                                    <span class="heightlight"></span>
+                                    <span class="bar"></span>
+                                    <label>Nombre del Puerto</label>
+                                </div>
+                                <div class="group">
+                                    <input type="text" id="edit-ip" class="input">
+                                    <span class="heightlight"></span>
+                                    <span class="bar"></span>
+                                    <label>Dirección IP</label>
+                                </div>
+                                <div class="group">
+                                    <input type="text" id="edit-mask" class="input">
+                                    <span class="heightlight"></span>
+                                    <span class="bar"></span>
+                                    <label>Máscara de Subred</label>  
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="group">
+                                    <input type="text" id="edit-vlan" class="input">
+                                    <span class="heightlight"></span>
+                                    <span class="bar"></span>
+                                    <label>Vlan Id</label>
+                                </div>
+                                <div class="group">
+                                    <input type="text" id="edit-status" class="input" readonly>
+                                    <span class="heightlight"></span>
+                                    <span class="bar"></span>
+                                    <label>Estado</label>
+                                </div> 
+                                <div class="group">
+                                    <input type="text" id="edit-puerta-enlace" class="input">
+                                    <span class="heightlight"></span>
+                                    <span class="bar"></span>
+                                    <label>Puerta de Enlace</label>
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="flex-row">
+                            <button type="button" id="btn-aplicar-cambios" class="btn btn-primary">Aplicar Cambios</button>
+                            <button type="button" id="btn-configurar-dhcp" class="btn btn-warning">Configurar a DHCP</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </main>
+    </section>
+</body>
+</html>
+<script>
+    window.onload = function() {
+    document.querySelector("#edit-nombre").value = localStorage.getItem("nombre");
+    document.querySelector("#edit-ip").value = localStorage.getItem("ip");
+    document.querySelector("#edit-mask").value = localStorage.getItem("mask");
+    document.querySelector("#edit-vlan").value = localStorage.getItem("vlan");
+    document.querySelector("#edit-status").value = localStorage.getItem("status");
+    document.querySelector("#edit-puerta-enlace").value = localStorage.getItem("getaway");
+  }
+
+   async function guardarCambios(){
+    localStorage.removeItem("nombre");
+    localStorage.removeItem("ip");
+    localStorage.removeItem("mask");
+    localStorage.removeItem("vlan");
+    localStorage.removeItem("status");
+    localStorage.removeItem("getaway");
+   }
+
+</script>

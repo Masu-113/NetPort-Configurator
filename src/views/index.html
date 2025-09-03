@@ -22,12 +22,16 @@
         
         <nav class="nav-menu" id="nav-menu">
             <ul class="nav-list">
-                <li><a href="#" id="nav-inicio" class="active"><i class="fas fa-home"></i> Inicio</a></li>
-                <li><a href="#" id="nav-configuracion"><i class="fas fa-cog"></i> Configuración</a></li>
+                <li><a href="/views/index.html" id="nav-inicio" class="active"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="/views/change_port.html" id="nav-configuracion"><i class="fas fa-cog"></i> Configuración</a></li>
                 <li><a href="#" id="nav-acerca-de"><i class="fas fa-info-circle"></i> Acerca de</a></li>
+                <label class="darkModeToggle">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="slider"></span>
+                </label>
             </ul>
         <div class="footer">
-            <p>&copy; 2025 NetPort. Todos los derechos reservados.</p>
+            <p>&copy; 2025 NetPort-Configurator. Todos los derechos reservados.</p>
         </div>
     </div>
     
@@ -53,57 +57,7 @@
                     <p id="response-msg"></p>
                 </div>
                 <!-- Segunda card: formulario de edicion -->
-                <div id="card-edicion" class="card oculto">
-                    <h2 style="margin: 30px;">Editar Puerto de Red</h2>
-                    <div id="form-edicion">
-                        <div class="flex-row">
-                            <div class="column">
-                                <div class="group">
-                                    <input type="text" id="edit-nombre" class="input" readonly>
-                                    <span class="heightlight"></span>
-                                    <span class="bar"></span>
-                                    <label>Nombre del Puerto</label>
-                                </div>
-                                <div class="group">
-                                    <input type="text" id="edit-ip" class="input">
-                                    <span class="heightlight"></span>
-                                    <span class="bar"></span>
-                                    <label>Dirección IP</label>
-                                </div>
-                                <div class="group">
-                                    <input type="text" id="edit-mask" class="input">
-                                    <span class="heightlight"></span>
-                                    <span class="bar"></span>
-                                    <label>Máscara de Subred</label>  
-                                </div>
-                            </div>
-                            <div class="column">
-                                <div class="group">
-                                    <input type="text" id="edit-vlan" class="input">
-                                    <span class="heightlight"></span>
-                                    <span class="bar"></span>
-                                    <label>Vlan Id</label>
-                                </div>
-                                <div class="group">
-                                    <input type="text" id="edit-status" class="input" readonly>
-                                    <span class="heightlight"></span>
-                                    <span class="bar"></span>
-                                    <label>Estado</label>
-                                </div> 
-                                <div class="group">
-                                    <input type="text" id="edit-puerta-enlace" class="input">
-                                    <span class="heightlight"></span>
-                                    <span class="bar"></span>
-                                    <label>Puerta de Enlace</label>
-                                </div> 
-                            </div>
-                        </div>
-                        <div class="flex-row">
-                            <button type="button" id="btn-aplicar-cambios" class="btn btn-primary">Aplicar Cambios</button>
-                            <button type="button" id="btn-configurar-dhcp" class="btn btn-warning">Configurar a DHCP</button>
-                        </div>
-                    </div>
-                </div>
+                
             </form>
         </main>
     </section>
