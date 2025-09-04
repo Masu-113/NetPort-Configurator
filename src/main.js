@@ -25,6 +25,10 @@ async function cargarDatos() {
       // Evita que la funcion buscar se ejecute si se utiliza al btn-editar
       btnEditar.onclick = (event) => {
         event.stopPropagation();
+        if (!window.isAdmin) {
+          mostrarNotificacion("No tienes privilegios necesarios para editar.", "error");
+          return;
+        }
         editarPuerto(nombre, ip, mask, vlan, status, getaway);
       };
 
@@ -56,14 +60,12 @@ async function cargarDatos() {
 
 // ----- Llenar card de edicion con el puerto seleccionado ------ //
 function editarPuerto(nombre, ip, mask, vlan, status, getaway) {
-  localStorage.setItem("nombre", nombre);
-  localStorage.setItem("ip", ip);
-  localStorage.setItem("mask", mask);
-  localStorage.setItem("vlan", vlan);
-  localStorage.setItem("status", status);
-  localStorage.setItem("getaway", getaway);
-  
-  window.location.href = "/views/change_port.html";
+  document.querySelector("#edit-nombre").value = nombre;
+  document.querySelector("#edit-ip").value = ip;
+  document.querySelector("#edit-mask").value = mask;
+  document.querySelector("#edit-vlan").value = vlan;
+  document.querySelector("#edit-status").value = status;
+  document.querySelector("#edit-puerta-enlace").value = getaway;
 }
 
 // ----- Manda las modificaciones de los puertos a change_conf_port.ps1 ------ //
@@ -233,6 +235,38 @@ function mostrarNotificacion(mensaje, tipo) {
   }, 4000);
 }
 
+// -------------- Funcion para obtener usuario -------------- //
+async function displayUsername() {
+  try {
+    const response = await invoke("get_username");
+
+    if (response && response.length === 2) {
+      const username = response[0];
+      const isAdmin = response[1];
+
+      document.getElementById("username").innerText = `Bienvenido, ${username}!`;
+
+      // Guardar el estado de administrador en el objeto global
+      window.isAdmin = isAdmin;
+
+      // Desactivar el botón de editar si no es administrador
+      const botonesEditar = document.querySelectorAll('.btn-editar');
+      botonesEditar.forEach(btn => {
+        btn.disabled = !isAdmin; // Desactiva el botón si no es administrador
+        btn.title = !isAdmin ? "No tienes privilegios necesarios" : ""; // Mensaje de tooltip
+      });
+    } else {
+      console.error("Respuesta inesperada al obtener el nombre de usuario:", response);
+    }
+  } catch (e) {
+    console.error("Error al obtener el nombre de usuario:", e);
+  }
+}
+
+// Llamar a la funcion displayUsername cuando la ventana se haya cargado
+window.onload = displayUsername;
+
+
 // ------ funcion debonce para evitar multiples llamadas consecutivas a las funciones ------ //
 function debounce(func, wait){
   let timeout;
@@ -301,10 +335,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.nav-list li a').forEach(link => link.classList.add('dark-mode'));
         document.querySelectorAll('.card').forEach(card => card.classList.add('dark-mode'));
         document.querySelectorAll('.flex-row input').forEach(input => input.classList.add('dark-mode'));
-        document.querySelectorAll('.btn-buscar, #btn-aplicar-cambios, #btn-configurar-dhcp, .btn-editar').forEach(btn => btn.classList.add('dark-mode'));
+        document.querySelectorAll('.btn-buscar, #btn-aplicar-cambios, #btn-configurar-dhcp, .btn-editar, #logo').forEach(btn => btn.classList.add('dark-mode'));
         document.querySelectorAll('.notification').forEach(notification => notification.classList.add('dark-mode'));
         document.querySelector('.footer').classList.add('dark-mode');
-    }
+
+        toggleButton.checked = true; // Asegura que el interruptor refleje el estado actual
+      }
 
     toggleButton.addEventListener('click', () => {
         document.body.classList.toggle('dark-mode');
@@ -312,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.nav-list li a').forEach(link => link.classList.toggle('dark-mode'));
         document.querySelectorAll('.card').forEach(card => card.classList.toggle('dark-mode'));
         document.querySelectorAll('.flex-row input').forEach(input => input.classList.toggle('dark-mode'));
-        document.querySelectorAll('.btn-buscar, #btn-aplicar-cambios, #btn-configurar-dhcp, .btn-editar').forEach(btn => btn.classList.toggle('dark-mode'));
+        document.querySelectorAll('.btn-buscar, #btn-aplicar-cambios, #btn-configurar-dhcp, .btn-editar, #logo').forEach(btn => btn.classList.toggle('dark-mode'));
         document.querySelectorAll('.notification').forEach(notification => notification.classList.toggle('dark-mode'));
         document.querySelector('.footer').classList.toggle('dark-mode');
 

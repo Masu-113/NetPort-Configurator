@@ -1,7 +1,7 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 use std::process::{Command, Stdio};
 use std::os::windows::process::CommandExt;
-
+use std::env;
 #[tauri::command]
 async fn ejecutar_powershell() -> Result<String, String> {
     let script = r#"
@@ -218,12 +218,34 @@ fn configurar_puerto_dhcp(nombre: &str) -> Result<(), String> {
     }
 }
 
+#[tauri::command]
+fn get_username() -> (String, bool) {
+    let username = env::var("USER")
+        .or_else(|_| env::var("USERNAME"))
+        .unwrap_or_else(|_| "unknown".to_string());
+
+    // Verificación de privilegios de administrador en Windows
+    let is_admin = Command::new("net")
+        .arg("session")
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .creation_flags(0x08000000)
+        .output()
+        .map(|output| output.status.success()) // Verifica si el comando se ejecutó con éxito
+        .unwrap_or(false);
+
+    (username, is_admin)
+}
+
+
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![ejecutar_powershell, cambiar_config_puerto, configurar_puerto_dhcp])
+        .invoke_handler(tauri::generate_handler![ejecutar_powershell, cambiar_config_puerto, configurar_puerto_dhcp, get_username])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
+
+
