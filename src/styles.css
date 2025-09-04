@@ -7,6 +7,10 @@
     overflow: hidden;
 }
 
+body #fondo {
+  background-color: #61a3da
+}
+
 #fondo img {
     width: 100%; 
     height: 100%; 
@@ -49,17 +53,17 @@
 
 .sidebar{
   position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 250px;
-  background-color: #ffffff;
+  top: 10PX;
+  left: 10px;
+  height: 98%;
+  width: 240px;
+  background-color: #e5e5e5;
   color: var(--text-light);
   transition: width 0.3s ease;
   background: 0.3s ease, color 0.3s ease;
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
   overflow: hidden;
-
+  border-radius: 20px;
   flex-direction: column;
   justify-content: space-between;
   z-index: 1000;
@@ -73,7 +77,6 @@
 .sidebar.collapsed{
   width: 65px;
 }
-
 
 .footer{
   padding: 20px;
@@ -270,11 +273,11 @@ a:hover {
 }
 
 #form-original{
-  background-color: #ffffff60;
+  background-color: #e5e5e5de;
 }
 
 #card-edicion{
-  background-color: #ffffff60;
+  background-color: #e5e5e5de;
 }
 .titulo {
   font-size: 22px;
@@ -291,10 +294,14 @@ a:hover {
   font-size: 1rem;
   font-weight: bold;
   color: #000000;
-  background-color: #ffffff;
   width: 50px;
   height: 50px;
 }
+
+#encabezado-tabla .col .dark-mode{
+  color : #ffffff;
+}
+
 
 .tabla-puertos {
   width: 100%;
@@ -305,7 +312,11 @@ a:hover {
   grid-template-columns: 1.5fr 1.5fr 1fr 1fr 1fr;
   align-items: center;
   padding: 10px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #000000;
+}
+
+body.dark-mode .fila {
+  border-bottom: 1px solid #ffffff; 
 }
 
 .fila:nth-child(even) {
@@ -437,7 +448,7 @@ label {
 .input:focus ~ label, .input ~ label {
  top: -20px;
  font-size: 14px;
- color: #5470d4;
+ color: #000000;
 }
 
 .bar {
@@ -649,9 +660,9 @@ body.dark-mode {
 
 #form-original.dark-mode,
 #card-edicion.dark-mode {
-  background-color: #1e1e1e;
+  background-color: #1e1e1eb8;
   color: #ffffff;
-  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 15px rgba(80, 143, 226, 0.712);
 }
 
 .btn-buscar.dark-mode:hover,
@@ -681,7 +692,6 @@ body.dark-mode {
   border-top: 1px solid #333333;
 }
 
-/* The switch - the box around the slider */
 .darkModeToggle {
   font-size: 17px;
   position: relative;
@@ -690,64 +700,201 @@ body.dark-mode {
   height: 2em;
 }
 
-/* Hide default HTML checkbox */
 .darkModeToggle input {
+  all: unset;
   opacity: 0;
   width: 0;
   height: 0;
 }
 
-/* The slider */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  inset: 0;
-  background: #9fccfa;
-  border-radius: 50px;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+body.dark-mode #form-edicion label{
+  color: #ffffff;
 }
 
-.slider:before {
+body.dark-mode #form-edicion .input{
+  background-color: #444;
+  color: #ffffff;
+}
+
+body.dark-mode #fondo {
+  background-color: #003360;
+}
+
+.slider {
+  background-color: #4ea4ff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  cursor: pointer;
+  border-radius: 30px;
+  transition: all 0.4s ease;
+}
+
+.slider::before {
   position: absolute;
   content: "";
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 2em;
-  width: 2em;
-  inset: 0;
-  background-color: white;
-  border-radius: 50px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  height: 1.4em;
+  width: 1.4em;
+  border-radius: 50%;
+  left: 8%;
+  bottom: 15%;
+  background: radial-gradient(circle, #ffd93b 60%, #ffb300 100%); /* Sol */
+  transition: all 0.4s ease;
+}
+
+.stars {
+  position: absolute;
+  border-radius: 50%;
+  height: 6px;
+  width: 6px;
+  left: 75%;
+  bottom: 40%;
+  background-color: transparent;
+  transition: all 0.3s ease;
 }
 
 .darkModeToggle input:checked + .slider {
-  background: #0974f1;
+  background-color: #1c1c3c; 
+  box-shadow: 0 0 5px 3px rgba(255, 255, 255, 0.5);
 }
 
-.darkModeToggle input:focus + .slider {
-  box-shadow: 0 0 1px #0974f1;
+.darkModeToggle input:checked + .slider::before {
+  transform: translateX(100%);
+  background: radial-gradient(circle, #c0c0c0 50%, #8a8a8a 100%); /* Luna */
+  box-shadow: -4px 2px 0 #1c1c3c; 
 }
 
-.darkModeToggle input:checked + .slider:before {
-  transform: translateX(1.6em);
+.darkModeToggle input:checked ~ .stars {
+  background-color: #fff;
+  box-shadow:
+    -10px 4px 0 #fff,
+    -6px -6px 0 #fff,
+    5px -8px 0 #fff,
+    12px 6px 0 #fff;
+  animation: twinkle 1.5s infinite alternate;
+}
+
+@keyframes twinkle {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.4;
+  }
 }
 
 body.modo-oscuro .fila {
-  background-color: #222; /* Fondo oscuro */
-  color: #fff; /* Texto claro */
-  border-bottom: 1px solid #444; /* Borde oscuro */
+  background-color: #222; 
+  color: #fff; 
+  border-bottom: 1px solid #444; 
 }
 
 body.modo-oscuro .fila:nth-child(even) {
   background-color: #333;
 }
 
+body.dark-mode #encabezado-tabla .col,
 body.modo-oscuro .col {
   color: #fff;
 }
 
-.btn-editar.dark-mode img {
+.btn-editar.dark-mode img, #logo.dark-mode {
   filter: invert(100%);
+}
+
+/* === Estilo general para todas las cards === */
+.card {
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  padding: 25px;
+  margin: 20px auto;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#about-card{
+  background-color: #e5e5e5;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.15);
+}
+
+/* === Card 1: About (más ancha) === */
+#about-card {
+  max-width: 900px;  /* Más ancha */
+  margin: 30px auto;
+  text-align: center;
+}
+
+#about-card h2 {
+  font-weight: 700;
+  color: #1a3c6e;
+}
+
+/* === Funciones y Beneficios (en fila) === */
+.flex-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+#functions-card,
+#benefits-card {
+  background-color: #e5e5e5;
+  flex: 1 1 400px;
+  max-width: 440px;
+  height: 350px;
+}
+
+#functions-card h3,
+#benefits-card h3 {
+  font-weight: 700;
+  color: #1a3c6e;
+}
+
+/* === Contacto (Footer estilo pie de página) === */
+#contact-card {
+  background:#00000000;
+  border: none;
+  color: white;
+  text-align: center;
+  padding: 40px 20px;
+  border-radius: 0;
+  margin-top: 40px;
+  max-width: 950px;
+}
+
+#contact-card h3 {
+  color: #fff;
+  margin-bottom: 15px;
+}
+
+#contact-card p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* ====== Modo oscuro ====== */
+body.dark-mode #about-card,
+body.dark-mode #functions-card,
+body.dark-mode #benefits-card,
+body.dark-mode #contact-card {
+  background: #1e1e1eb8;
+  color: #eaeaea;
+  box-shadow: 0 4px 15px rgba(80, 143, 226, 0.712)
+}
+
+body.dark-mode #about-card h2,
+body.dark-mode #functions-card h3,
+body.dark-mode #benefits-card h3,
+body.dark-mode #contact-card h3 {
+  color: #4dabf7;
+}
+
+body.dark-mode #contact-card a {
+  color: #4dabf7;
 }

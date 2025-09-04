@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="../styles.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="../main.js" defer></script>
+</head>
+
+<body>
+  <div id="notification-container" class="notification-container"></div>
+  <div id="confirmation-container"></div>
+  <div class="spinner"></div>
+  <img src="/assets/fondo-estampado-fluido-azul.png" alt="fondo" id="fondo">
+  <div class="sidebar" id="sidebar">
+      <div class="header">
+          <button class="toggle-btn" id="toggleBtn">☰</button>
+          <img src="/assets/logoNetPort.png" alt="logoNetPort" id="logo">
+      </div>
+      
+      <nav class="nav-menu" id="nav-menu">
+          <ul class="nav-list">
+            <li><h4 id="username"></h4></li>
+            <li><a href="/views/index.html" id="nav-inicio" class="active"><i class="fas fa-home"></i> Inicio</a></li>
+            <li><a href="#" id="nav-acerca-de"><i class="fas fa-info-circle"></i> Acerca de</a></li>
+            <label class="darkModeToggle">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="slider"></span>
+              </label>
+          </ul>
+          <div class="footer">
+              <p>&copy; 2025 NetPort-Configurator. Todos los derechos reservados.</p>
+          </div>
+      </nav>
+  </div>
+      <main class="container">
+          <div>
+            <!-- Card 1: Acerca de -->
+            <div>
+                <div class="card" id="about-card">
+                    <h2 class="titulo text-center mb-3">Acerca de <strong>NetPort Configurator</strong></h2>
+                    <p>
+                    <strong>NetPort Configurator</strong> es una herramienta diseñada para simplificar la
+                    gestión de la configuración de red en tu computadora. Con su interfaz intuitiva, podrás
+                    modificar puertos, direcciones IP, máscaras de subred, puertas de enlace y VLAN ID de manera
+                    rápida, confiable y segura.
+                    </p>
+                </div>
+            </div>
+            <div class="flex-row">
+                <!-- Card 2: Funciones -->
+                <div>
+                    <div class="card" id="functions-card">
+                        <h3 class="mb-3">Funciones Principales</h3>
+                        <ul>
+                        <li><strong>Gestión de IP:</strong> Cambia tu dirección IP en pocos pasos.</li>
+                        <li><strong>Máscara de Subred:</strong> Ajusta la máscara según tu red.</li>
+                        <li><strong>Puerta de Enlace:</strong> Configura la puerta de enlace predeterminada.</li>
+                        <li><strong>VLAN ID:</strong> Modifica el VLAN ID para optimizar la segmentación.</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Card 3: Beneficios -->
+                <div>
+                    <div class="card" id="benefits-card">
+                        <h3 class="mb-3">Beneficios</h3>
+                        <ul>
+                        <li>Optimiza tu configuración de red en minutos.</li>
+                        <li>Ideal para administradores de red, técnicos y usuarios avanzados.</li>
+                        <li>Interfaz moderna y ligera.</li>
+                        <li>Reduce errores comunes en configuraciones manuales.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Card 4: Contacto -->
+            <div class="footer">
+                <div class="card p-4" id="contact-card">
+                    <h3 class="mb-3">Contacto</h3>
+                    
+                </div>
+            </div>
+          </div>
+      </main>
+</body>
+</html>
