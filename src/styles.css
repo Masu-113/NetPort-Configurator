@@ -46,9 +46,15 @@ body #fondo {
   font-weight: 700;
 }
 
+
 #toggleBtn:hover{
   background-color: #333333;
   cursor: pointer;
+}
+
+.dark-mode #toggleBtn{
+  background-color: #e0e0e0;
+  color: #1e1e1e;
 }
 
 .sidebar{
@@ -85,6 +91,12 @@ body #fondo {
   color: var(--text-light);
   color: #000000;
   border-top: 1px solid #515151;
+  display:grid;
+  align-items: center;
+}
+
+footer a{
+  margin-left: 8px;
 }
 
 .sidebar .header{
@@ -102,7 +114,7 @@ body #fondo {
 }
 
 .nav-list{
-  height: 750px;
+  height: 720px;
   justify-content:left;
   list-style-type: none;
   justify-content: center;
@@ -854,28 +866,6 @@ body.modo-oscuro .col {
 #benefits-card h3 {
   font-weight: 700;
   color: #1a3c6e;
-}
-
-/* === Contacto (Footer estilo pie de página) === */
-#contact-card {
-  background:#00000000;
-  border: none;
-  color: white;
-  text-align: center;
-  padding: 40px 20px;
-  border-radius: 0;
-  margin-top: 40px;
-  max-width: 950px;
-}
-
-#contact-card h3 {
-  color: #fff;
-  margin-bottom: 15px;
-}
-
-#contact-card p {
-  margin: 0;
-  font-size: 1rem;
 }
 
 /* ====== Modo oscuro ====== */
