@@ -196,6 +196,7 @@ Para compilar si esta utilizando Linux o Mac, seguir la [documentación oficial 
 ## Instaladores
 
 Los instaladores generados despues de realizar el empaquetamiento tienen un diseño y caracteristicas por defecto, para realizar personalizar estos instaladores se requeiere modificar el archivo `tauri.conf.json` del proyecto.
+    
     ```bash
     "windows": {
       "allowDowngrades": true,
