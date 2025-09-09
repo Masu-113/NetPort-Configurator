@@ -193,6 +193,53 @@ Para compilar si esta utilizando Linux o Mac, seguir la [documentación oficial 
 
 ---
 
+## Instaladores
+
+Los instaladores generados despues de realizar el empaquetamiento tienen un diseño y caracteristicas por defecto, para realizar personalizar estos instaladores se requeiere modificar el archivo `tauri.conf.json` del proyecto.
+    ```bash
+    "windows": {
+      "allowDowngrades": true,
+      "certificateThumbprint": null,
+      "digestAlgorithm": null,
+      "nsis":{
+        "sidebarImage": "icons/DialogImagePath.bmp",
+        "installMode": "perMachine",
+        "languages": ["spanish"],
+        "startMenuFolder": "NetPort-app",
+        "installerIcon": "icons/icon.ico"
+      },
+      "signCommand": null,
+      "timestampUrl": null,
+      "tsp": false,
+      "webviewInstallMode": {
+        "silent": true,
+        "type": "embedBootstrapper"
+      },
+      "wix": {
+        "language": "es-ES",
+        "bannerPath": "icons/bannerPath.png",
+        "dialogImagePath": "icons/DialogImagePath.png"
+      }
+    }
+
+Agregar esto en el `"bundle"` , una vez agregado en caso de mostrar errores revisar la estrucuturacion del archivo `tauri.conf.json` ya que esto puede generar errores y que no reconozca algunas propiedades. Para modificar el instalador `.exe` modificar el apartado de **nsis** y para modificar el instalador `.msi` modificar el apartado de **wix**.
+
+ -  Notas de las propiedades de **wix**:
+    -   `lenguage`  esto modifica el idioma del instalador.
+    -   `bannerPath`    esto remplaza el banner que aparece en la segunda vista de la ventana que muestra el instalador.
+    -   `dialogImagePath`   esto modifica la imagen de fondo de la primera vista de la ventana al ejecutar el instalador(la img cubre el fondo de toda asa vista).
+
+-   Notas de las propiedades de **nsis**:
+    - `lenguages` esto modifica el idioma del instalador.
+    - `sidebarimage` esto modifica la imagen que sale al lado izquierdo de la primera visra de la ventana al ejecutar el instalador(la img no cubre todo el fondo de la vista solo esa parte).
+    - `installerIcon` modifica el icono que se muestra en el instalador en la barra superior de la ventana y tambien el icono que se muestra en la segunda vista de la ventana que muestra el instalador.
+    - `installMode` por defecto el instalador busca instalar el aplicativo en el usuario que ejecuto el instalador, con esta propiedad podemos modificarlo asignandole **"perMachine"** que instala el aplicativo en el disco `C:/` , (solicitara requisitos elevados para ejecutar el instalador).
+    - `startMenuFolder` modifica el nombre de la carpeta en la que se genera el aplicativo y el archivo de desinstalacion.
+
+**Estas son solo algunas de las propiedades que se pueden ocupar.**    
+
+---
+
 ## Notas sobre la aplicacion.
 
 1. **Rutas a archivos externos.**
@@ -237,4 +284,4 @@ Para compilar si esta utilizando Linux o Mac, seguir la [documentación oficial 
 ## Creditos
 
 - **Marlon José Suárez Baltodano**: Desarrollador principal.
-- **Yelizabeth Danyali Ninoska Diaz Montano**: Responsable del diseño del logo eh icono del proyecto. [instagram](https://www.instagram.com/yelyaly14?igsh=YWlrMHVncjZ5MGVh).
+- **Yelizabeth Danyali Ninoska Diaz Montano**: Responsable del diseño del logo eh icono del proyecto. [instagram](https://www.instagram.com/yelyaly14?igsh=YWlrMHVncjZ5MGVh)
