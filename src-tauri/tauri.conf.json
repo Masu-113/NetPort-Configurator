@@ -27,11 +27,36 @@
     "active": true,
     "targets": "all",
     "icon": [
-      "icons/32x32.png",
-      "icons/128x128.png",
-      "icons/128x128@2x.png",
+      "32x32.png",
+      "64x64.png",
+      "128x128.png",
+      "128x128@2x.png",
       "icons/icon.icns",
-      "icons/iconoNetPort.ico"     
-    ]
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "allowDowngrades": true,
+      "certificateThumbprint": null,
+      "digestAlgorithm": null,
+      "nsis":{
+        "sidebarImage": "icons/DialogImagePath.bmp",
+        "installMode": "perMachine",
+        "languages": ["spanish"],
+        "startMenuFolder": "NetPort-app",
+        "installerIcon": "icons/icon.ico"
+      },
+      "signCommand": null,
+      "timestampUrl": null,
+      "tsp": false,
+      "webviewInstallMode": {
+        "silent": true,
+        "type": "embedBootstrapper"
+      },
+      "wix": {
+        "language": "es-ES",
+        "bannerPath": "icons/bannerPath.png",
+        "dialogImagePath": "icons/DialogImagePath.png"
+      }
+    }
   }
 }
