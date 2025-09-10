@@ -265,7 +265,7 @@ Agregar esto en el `"bundle"` , una vez agregado en caso de mostrar errores revi
 
     - Importante: la manipulacion de configuraciones de red puede afectar la conectividad del sistema, *Usar con precaucion*.
 
-    - Revisar el manual de usuario que brinda NetPort: [Manual de Usuario](https://github.com/Masu-113/NetPort/blob/msuarez/documentacion/ManualDeUsuario-NetPort_v1.0.pdf).
+    - Revisar el manual de usuario que brinda NetPort: [Manual de Usuario](documentacion\ManualDeUsuario-NetPort_v1.0.pdf).
 
 ---
 
