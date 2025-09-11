@@ -84,15 +84,9 @@ async function guardarCambios() {
 
   try {
     console.log("Datos a enviar:", datos);
-    const resultado = await invoke("cambiar_config_puerto", { datos });
-
-    // Verificar si el resultado contiene un mensaje de error
-    if (resultado.includes("La operación solicitada requiere elevación")) {
-      mostrarNotificacion("Error: " + resultado, "error");
-    } else {
-      mostrarNotificacion("Cambios aplicados correctamente", "success");
-      cargarDatos();
-    }
+    await invoke("cambiar_config_puerto", { datos });
+    mostrarNotificacion("Cambios aplicados correctamente", "success");
+    cargarDatos();
     } catch (e) {
     console.log("Error al aplicar cambios: ", e);
     mostrarNotificacion("Error al aplicar cambios: " + e.message, "error");
