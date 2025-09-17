@@ -25,6 +25,10 @@ async function cargarDatos() {
       // Evita que la funcion buscar se ejecute si se utiliza al btn-editar
       btnEditar.onclick = (event) => {
         event.stopPropagation();
+        if(!window.isAdmin){
+          mostrarNotificacion("No tienes privilegios necesarios para editar.", "error");
+          return;
+        }
         editarPuerto(nombre, ip, mask, vlan, status, getaway);
       };
 
@@ -87,11 +91,11 @@ async function guardarCambios() {
 
 // -------- Funcion para validar los datos ingresados a modificar ------- //
 function validar_datos(datos) {
-   const ipRegex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+  const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
   const soloNumeros = /^\d+$/;
 
-  if (!datos.nombre || !datos.ip || !datos.mask) {
-    mostrarNotificacion("Llenar todos los campos obligatorios (nombre, IP, máscara)", "error");
+  if (!datos.nombre || !datos.ip || !datos.mask || !datos.vlan || !datos.gateway) {
+    mostrarNotificacion("Llenar todos los campos", "error");
     return false;
   }
 
@@ -99,9 +103,13 @@ function validar_datos(datos) {
     mostrarNotificacion("La dirección IP no es válida.", "error");
     return false;
   }
+  if (!ipRegex.test(datos.gateway) || !validarIP(datos.gateway)) {
+    mostrarNotificacion("La puerta de enlace no es válida.", "error");
+    return false;
+  }
 
-  if (datos.vlan !== null && datos.vlan !== "" && datos.vlan.toLowerCase() !== "null" && !soloNumeros.test(datos.vlan)) {
-    mostrarNotificacion("La VLAN debe ser un número entero o NULL.", "error");
+  if (!soloNumeros.test(datos.vlan)) {
+    mostrarNotificacion("La VLAN debe ser un número sin letras.", "error");
     return false;
   }
 
@@ -109,12 +117,6 @@ function validar_datos(datos) {
     mostrarNotificacion("La máscara que insertó no es válida.", "error");
     return false;
   }
-
-  if (datos.gateway && !ipRegex.test(datos.gateway) && datos.gateway !== null && datos.gateway !== "" && datos.gateway.toLowerCase() !== "null") {
-    mostrarNotificacion("La puerta de enlace no es válida.", "error");
-    return false;
-  }
-  
   return true;
 }
 
@@ -127,7 +129,7 @@ function validarIP(ip) {
   });
 }
 
-// ---- Función para validar máscara ---- //
+// ---- Función para validar mascara ---- //
 function validarMascara(mascara) {
   const octetos = mascara.split('.');
   if (octetos.length !== 4) {
@@ -156,7 +158,7 @@ function validarMascara(mascara) {
   return true;
 }
 
-// ----- Confirmar la configuración a DHCP ------ //
+// ----- confirmar la configuracion a DHCP ------ //
 function confirmarConfiguracionDHCP() {
   const nombre = document.querySelector("#edit-nombre").value;
 
@@ -165,33 +167,13 @@ function confirmarConfiguracionDHCP() {
     return;
   }
 
-  mostrarNotificacionConConfirmacion(`¿Está seguro de que desea reiniciar el puerto "${nombre}" y configurarlo en DHCP?`, async () => {
-    await configurarPuertoADHCP();
-  });
-}
+  const confirmacion = confirm(`¿Está seguro de que desea reiniciar el puerto "${nombre}" y configurarlo en DHCP?`);
 
-// ----- Mostrar notificación con confirmación ------ //
-function mostrarNotificacionConConfirmacion(mensaje, callback) {
-  const contenedor = document.getElementById("confirmation-container");
-  const notificacion = document.createElement("div");
-  notificacion.classList.add("notification", "confirm");
-  notificacion.innerHTML = `
-    <p>${mensaje}</p>
-    <button id="confirmar">Sí</button>
-    <button id="cancelar">No</button>
-  `;
-
-  contenedor.appendChild(notificacion);
-
-  document.getElementById("confirmar").onclick = () => {
-    callback();
-    contenedor.removeChild(notificacion);
-  };
-
-  document.getElementById("cancelar").onclick = () => {
+  if (confirmacion) {
+    configurarPuertoADHCP(); 
+  } else {
     console.log("Configuración a DHCP cancelada.");
-    contenedor.removeChild(notificacion);
-  };
+  }
 }
 
 // ----- Modificar la configurar del puerto a DHCP ------ //
@@ -207,6 +189,34 @@ async function configurarPuertoADHCP() {
   }
 }
 
+// ---------- Funcion para obtener usuario ---------- //
+async function displayUsername() {
+  try{
+    const response = await invoke("get_username");
+    
+    if (response && response.length === 2){
+      const username = response[0];
+      const isAdmin = response[1];
+
+      document.getElementById("username").innerText = `Bienvenido, ${username}!`;
+
+      window.isAdmin = isAdmin;
+
+      const btnEditar = document.querySelectorAll('.btn-editar');
+      btnEditar.forEach(btn => {
+        btn.disabled = !isAdmin;
+        btn.title = !isAdmin ? "No tienes privilegios necesarios" : "";
+      });
+    } else {
+      console.error("Respuesta inesperada al obtener el nombre de usuario: ", response);
+    }
+  } catch (e) {
+    console.error("Error al obtener el nombre de usuario: ", e);
+  }
+}
+
+window.onload = displayUsername;
+
 // ---------- Funcion para mostrar notificaciones ---------- //
 function mostrarNotificacion(mensaje, tipo) {
   const contenedor = document.getElementById("notification-container");
@@ -221,33 +231,20 @@ function mostrarNotificacion(mensaje, tipo) {
   }, 4000);
 }
 
-// ------ funcion debonce para evitar multiples llamadas consecutivas a las funciones ------ //
-function debounce(func, wait){
-  let timeout;
-  return function(...args){
-    const contexto = this;
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      func.apply(contexto. args);
-    }, wait);
-  }
-}
-
 // ------------------------ Acciones de los botones ------------------------------- //
 document.addEventListener("DOMContentLoaded", () => {
   const btnAplicarCambios = document.querySelector("#btn-configurar-dhcp");
   if (btnAplicarCambios) {
-
-    btnAplicarCambios.addEventListener("click", debounce(confirmarConfiguracionDHCP,1000));
+    btnAplicarCambios.addEventListener("click", confirmarConfiguracionDHCP);
   } else {
-    console.error("Boton de aplicar cambios no encontrado");
+    console.error("Botón de aplicar cambios no encontrado");
   }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
   const btnAplicarCambios = document.querySelector("#btn-aplicar-cambios");
   if (btnAplicarCambios) {
-    btnAplicarCambios.addEventListener("click", debounce(guardarCambios,1000));
+    btnAplicarCambios.addEventListener("click", guardarCambios);
   } else {
     console.error("Botón de aplicar cambios no encontrado");
   }
