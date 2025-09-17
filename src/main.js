@@ -311,7 +311,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 window.addEventListener("DOMContentLoaded", () => {
-  const form = document.querySelector("#data-form");
+  const form = document.querySelector("#main-content");
   form.addEventListener("submit", e => {
     e.preventDefault();
     cargarDatos();
