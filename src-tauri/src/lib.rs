@@ -252,11 +252,19 @@ fn get_username() -> (String, bool) {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|app, _event, _payload| {
-            // Intenta obtener la ventana principal
             if let Some(main_window) = app.get_webview_window("main") {
-                // Restaura la ventana si está minimizada
-                let _ = main_window.show();
-                let _ = main_window.set_focus();
+                match main_window.is_minimized() {
+                    Ok(is_minimized) => {
+                        if is_minimized {
+                            let _ = main_window.unminimize();
+                        }
+                        let _ = main_window.show();
+                        let _ = main_window.set_focus();
+                    }
+                    Err(e) => {
+                        eprintln!("Error al verificar si la ventana está minimizada: {:?}", e);
+                    }
+                }
             }
         }))
         .plugin(tauri_plugin_opener::init())
