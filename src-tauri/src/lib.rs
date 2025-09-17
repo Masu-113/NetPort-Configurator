@@ -2,6 +2,8 @@
 use std::process::{Command, Stdio};
 use std::os::windows::process::CommandExt;
 use std::env;
+
+//funcion para obtener los adaptadores de red
 #[tauri::command]
 async fn ejecutar_powershell() -> Result<String, String> {
     let script = r#"
@@ -76,6 +78,65 @@ async fn ejecutar_powershell() -> Result<String, String> {
         Err(s.trim().to_string())
     }
 }
+
+// ---------- toma los datos de los puertos del ipv6 ----------//
+#[tauri::command]
+async fn tomar_datos_ipv6() -> Result<String, String> {
+    let script = r#"
+        # Obtener todos los adaptadores de red
+        $adapters = Get-NetAdapter
+
+        # Crear una lista para almacenar los resultados
+        $resultados = @()
+
+        foreach ($adapter in $adapters) {
+            # Obtener la configuración IP para cada adaptador (IPv6)
+            $ipConfig = Get-NetIPAddress -InterfaceIndex $adapter.ifIndex -AddressFamily IPv6 | Select-Object -First 1
+
+            # Obtener VLAN ID y estado
+            $vlanID = ($adapter | Get-NetAdapterAdvancedProperty -DisplayName "VLAN ID" -ErrorAction SilentlyContinue).DisplayValue
+            $status = $adapter.Status
+
+            # Obtener puerta de enlace (gateway)
+            $gateway = (Get-NetRoute -InterfaceIndex $adapter.ifIndex -DestinationPrefix '::/0' -ErrorAction SilentlyContinue | 
+                        Select-Object -ExpandProperty NextHop -First 1)
+            if (-not $gateway) { $gateway = "NULL" }
+
+            # Preparar los valores
+            $nombre = $adapter.Name
+            $ip = if ($ipConfig) { $ipConfig.IPAddress } else { "No IP" }
+            $prefixlength = if ($ipConfig) { $ipConfig.PrefixLength } else { "No prefixlength" }
+            $vlan = if ($vlanID) { $vlanID } else { "Null" }
+
+            # Agregar a los resultados
+            $resultados += "$nombre|$ip|$prefixlength|$vlan|$status|$gateway"
+        }
+
+        # Mostrar los resultados
+        Write-Output $resultados
+    "#;
+
+    let output = tauri::async_runtime::spawn_blocking(move || {
+        Command::new("powershell.exe")
+            .args(&["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", script])
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .creation_flags(0x08000000)
+            .output()
+    })
+    .await
+    .map_err(|e| e.to_string())?
+    .map_err(|e| e.to_string())?;
+
+    if output.status.success() {
+        let s = String::from_utf8_lossy(&output.stdout).to_string();
+        Ok(s.trim().to_string())
+    } else {
+        let s = String::from_utf8_lossy(&output.stderr).to_string();
+        Err(s.trim().to_string())
+    }
+}
+
 
 #[tauri::command]
 fn cambiar_config_puerto(datos: serde_json::Value) -> Result<(), String> {
@@ -243,7 +304,13 @@ fn get_username() -> (String, bool) {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![ejecutar_powershell, cambiar_config_puerto, configurar_puerto_dhcp, get_username])
+        .invoke_handler(tauri::generate_handler![
+            ejecutar_powershell, 
+            cambiar_config_puerto, 
+            configurar_puerto_dhcp, 
+            get_username,
+            tomar_datos_ipv6
+            ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
