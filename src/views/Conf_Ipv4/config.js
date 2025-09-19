@@ -1,5 +1,32 @@
 const { invoke } = window.__TAURI__.core;
 
+// --------- Esta funcion hace que se carga la funcionalidad junto con la vista en el layout -------- //
+export function init() {
+  console.log("Inicializando configuración IPv4...");
+
+  cargarDatos();
+  
+  const btnBuscar = document.querySelector("#btn-buscar");
+  if(btnBuscar){
+    btnBuscar.addEventListener("click", debounce(cargarDatos,1000))
+  }
+
+  const btnAplicarCambios = document.querySelector("#btn-aplicar-cambios");
+  if (btnAplicarCambios) {
+    btnAplicarCambios.addEventListener("click", debounce(guardarCambios, 1000));
+  }
+
+  const btnConfigurarDHCP = document.querySelector("#btn-configurar-dhcp");
+  if (btnConfigurarDHCP) {
+    btnConfigurarDHCP.addEventListener("click", debounce(confirmarConfiguracionDHCP, 1000));
+  }
+
+  if (btn-editar){
+     bftn-editar.addEventListener("click", debounce(editarPuerto, 1000));
+  }
+  
+}
+
 // -------- funcion para extraer la informacion de los puertos -------- //
 async function cargarDatos() {
   try {
@@ -20,15 +47,15 @@ async function cargarDatos() {
       const btnEditar = document.createElement("button");
       btnEditar.type = "button";
       btnEditar.classList.add("btn-editar");
-      btnEditar.innerHTML = `<img src="../assets/icone-config.png" alt="icono" width="30" height="30">`;
+      btnEditar.innerHTML = `<img src="/assets/icone-config.png" alt="icono" width="30" height="30">`;
       
       // Evita que la funcion buscar se ejecute si se utiliza al btn-editar
       btnEditar.onclick = (event) => {
         event.stopPropagation();
-        if (!window.isAdmin) {
+        /*if (!window.isAdmin) {
           mostrarNotificacion("No tienes privilegios necesarios para editar.", "error");
           return;
-        }
+        }*/
         editarPuerto(nombre, ip, mask, vlan, status, getaway);
       };
 
@@ -229,38 +256,6 @@ function mostrarNotificacion(mensaje, tipo) {
   }, 4000);
 }
 
-// -------------- Funcion para obtener usuario -------------- //
-async function displayUsername() {
-  try {
-    const response = await invoke("get_username");
-
-    if (response && response.length === 2) {
-      const username = response[0];
-      const isAdmin = response[1];
-
-      document.getElementById("username").innerText = `Bienvenido, ${username}!`;
-
-      // Guardar el estado de administrador en el objeto global
-      window.isAdmin = isAdmin;
-
-      // Desactivar el botón de editar si no es administrador
-      const botonesEditar = document.querySelectorAll('.btn-editar');
-      botonesEditar.forEach(btn => {
-        btn.disabled = !isAdmin; // Desactiva el botón si no es administrador
-        btn.title = !isAdmin ? "No tienes privilegios necesarios" : ""; // Mensaje de tooltip
-      });
-    } else {
-      console.error("Respuesta inesperada al obtener el nombre de usuario:", response);
-    }
-  } catch (e) {
-    console.error("Error al obtener el nombre de usuario:", e);
-  }
-}
-
-// Llamar a la funcion displayUsername cuando la ventana se haya cargado
-window.onload = displayUsername;
-
-
 // ------ funcion debonce para evitar multiples llamadas consecutivas a las funciones ------ //
 function debounce(func, wait){
   let timeout;
@@ -273,24 +268,8 @@ function debounce(func, wait){
   }
 }
 
-// ------------------------ Acciones de los botones ------------------------------- //
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('toggleBtn').addEventListener('click', function() {
-        var sidebar = document.getElementById('sidebar');
-        var navMenu = document.getElementById('nav-menu');
 
-        sidebar.classList.toggle('collapsed');
-        
-        if(navMenu){
-          navMenu.classList.toggle('collapsed');
-        }
-        else{
-          console.error("Elemento nav-menu no encontrado");
-        }
-    });
-});
-
-
+// ------------ Acciones de los botones ---------- //
 document.addEventListener("DOMContentLoaded", () => {
   const btnAplicarCambios = document.querySelector("#btn-configurar-dhcp");
   if (btnAplicarCambios) {
@@ -310,47 +289,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-window.addEventListener("DOMContentLoaded", () => {
-  const form = document.querySelector("#main-content");
-  form.addEventListener("submit", e => {
-    e.preventDefault();
-    cargarDatos();
-  });
-});
-
-// -------- funcion para el modo oscuro -------- //
-document.addEventListener('DOMContentLoaded', () => {
-    const toggleButton = document.getElementById('darkModeToggle');
-
-    // Comprobar el estado del modo oscuro en localStorage
-    if (localStorage.getItem('dark-mode') === 'enabled') {
-        document.body.classList.add('dark-mode');
-        document.querySelector('.sidebar').classList.add('dark-mode');
-        document.querySelectorAll('.nav-list li a').forEach(link => link.classList.add('dark-mode'));
-        document.querySelectorAll('.card').forEach(card => card.classList.add('dark-mode'));
-        document.querySelectorAll('.flex-row input').forEach(input => input.classList.add('dark-mode'));
-        document.querySelectorAll('.btn-buscar, #btn-aplicar-cambios, #btn-configurar-dhcp, .btn-editar, #logo').forEach(btn => btn.classList.add('dark-mode'));
-        document.querySelectorAll('.notification').forEach(notification => notification.classList.add('dark-mode'));
-        document.querySelector('.footer').classList.add('dark-mode');
-
-        toggleButton.checked = true; // Asegura que el interruptor refleje el estado actual
-      }
-
-    toggleButton.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        document.querySelector('.sidebar').classList.toggle('dark-mode');
-        document.querySelectorAll('.nav-list li a').forEach(link => link.classList.toggle('dark-mode'));
-        document.querySelectorAll('.card').forEach(card => card.classList.toggle('dark-mode'));
-        document.querySelectorAll('.flex-row input').forEach(input => input.classList.toggle('dark-mode'));
-        document.querySelectorAll('.btn-buscar, #btn-aplicar-cambios, #btn-configurar-dhcp, .btn-editar, #logo').forEach(btn => btn.classList.toggle('dark-mode'));
-        document.querySelectorAll('.notification').forEach(notification => notification.classList.toggle('dark-mode'));
-        document.querySelector('.footer').classList.toggle('dark-mode');
-
-        // Guardar la preferencia en localStorage
-        if (document.body.classList.contains('dark-mode')) {
-            localStorage.setItem('dark-mode', 'enabled');
-        } else {
-            localStorage.setItem('dark-mode', 'disabled');
-        }
-    });
+document.addEventListener("DOMContentLoaded", () => {
+  const btnBuscar = document.querySelector("#btn-buscar");
+  if (btnBuscar) {
+    btnBuscar.addEventListener("click", debounce(cargarDatos,1000));
+    }
+    else {
+        console.error("Botton de cargar datos.");
+    }
 });
