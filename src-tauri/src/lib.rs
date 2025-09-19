@@ -1,7 +1,9 @@
+
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 use std::process::{Command, Stdio};
 use std::os::windows::process::CommandExt;
-use std::env;
+use std::{env};
+
 
 //funcion para obtener los adaptadores de red
 #[tauri::command]
@@ -220,6 +222,103 @@ fn cambiar_config_puerto(datos: serde_json::Value) -> Result<(), String> {
 }
 
 #[tauri::command]
+fn cambiar_config_puerto_ipv6(datos: serde_json::Value) -> Result<(), String> {
+    let nombre = datos["nombre"].as_str().unwrap_or("");
+    let ip = datos["ip"].as_str().unwrap_or("");
+    let prefixlength = datos["prefixlength"].as_str().unwrap_or("");
+    let vlan = datos["vlan"].as_str().unwrap_or("");
+    let gateway = datos["gateway"].as_str().unwrap_or("");
+    
+
+    println!(
+        "Datos enviados: nombre={}, ip={}, prefixlength={}, vlan={}, gateway={}",
+        nombre, ip, prefixlength, vlan, gateway
+    );
+
+    let script = format!(
+        r#"
+        Write-Output "Modificacion del puerto: {nombre}"
+        Write-Output "Nueva IP: {ip}"
+        Write-Output "Nueva Máscara: {prefixlength}"
+        Write-Output "Nuevo VLAN ID: {vlan}"
+        Write-Output "Nueva puerta de enlace: {gateway}"
+
+        try {{
+            # Deshabilitar el DHCP en la interfaz IPv6
+            Write-Output "Deshabilitando DHCP en la interfaz {nombre}..."
+            Get-NetIPInterface -InterfaceAlias "{nombre}" -AddressFamily "IPv6" | Set-NetIPInterface -Dhcp Disabled
+
+            # Lógica para manejar VLAN
+            if ("{vlan}" -ne "" -and "{vlan}" -ne "NULL" -and "{vlan}" -ne "Null") {{
+                Write-Output "Configurando VLAN ID: {vlan}..."
+                Set-NetAdapterAdvancedProperty -Name "{nombre}" -DisplayName "VLAN ID" -DisplayValue "{vlan}"
+            }} else {{
+                Write-Output "Eliminando configuración de VLAN para el puerto {nombre}..."
+                Set-NetAdapterAdvancedProperty -Name "{nombre}" -DisplayName "VLAN ID" -DisplayValue 0
+            }}
+
+            #verificar si hay una Ipv6 existente
+            $existing_ipv6 = Get-NetIPAddress -InterfaceAlias {nombre} -AddressFamily "IPv6" -ErrorAction SilentlyContinue
+            
+            if ($existing_ipv6){{
+                Write-Output "Eliminando direccion Ipv6 existente: $($existing_ipv6).IPAdress"
+                Remove-NetIPAddress -InterfaceAlias {nombre} -IPAddress $existing_ipv6.IPAddress -Confirm:false
+            }}
+            
+            #Configurar la nueva direccion Ipv6
+            Write-Output "Configurando la nueva direccion Ipv6: {ip} con prefijo de longitu {prefixlength} ... "
+            New-NetIPAddress -InterfaceAlias {nombre} -IPAddress {ip} -PrefixLength {prefixlength} -AddressFamily "IPv6"
+
+            # Configurar la puerta de enlace
+            if({gateway} -ne "" -and {gateway} -ne "" -and {gateway} -ne "NULL" -and {gateway} -ne "Null"){{
+                Write-Output "Configurando puerta de enlace: {gateway} ..."
+                New-NetRoute -InterfaceAlias {nombre} -DestinationPrefix '::/0' -NextHop {gateway} -AddressFamily "Ipv6" 
+            }}
+
+            Write-Output "Configuración completada para el puerto: {nombre}"
+        
+        
+        }} catch {{
+            Write-Output "Error al aplicar la configuración: $_"
+            exit 1
+        }}
+
+        $ipConfig = Get-NetIPAddress -InterfaceAlias "{nombre}"
+        Write-Output "Configuración actual:"
+        Write-Output "IP: $($ipConfig.IPAddress)"
+        Write-Output "Máscara: $($ipConfig.PrefixLength)"
+        $vlanID = (Get-NetAdapterAdvancedProperty -Name "{nombre}" -DisplayName "VLAN ID" -ErrorAction SilentlyContinue).DisplayValue
+        Write-Output "VLAN ID: $vlanID"
+        Write-Output "Puerta de Enlace: {gateway}"
+        exit 0
+    "#
+    );
+
+    let output = Command::new("powershell.exe")
+        .args(&["-WindowStyle", "Hidden", "-Command", &script])
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .creation_flags(0x08000000)
+        .output()
+        .expect("failed to execute command");
+
+    if output.status.success() {
+        let success_message = String::from_utf8_lossy(&output.stdout);
+        println!("Salida del script: {}", success_message);
+        Ok(())
+    } else {
+        let error_message = String::from_utf8_lossy(&output.stderr);
+        Err(format!(
+            "Error al modificar la configuración del puerto: {}",
+            error_message
+        ))
+    }
+}
+
+
+
+
+#[tauri::command]
 fn configurar_puerto_dhcp(nombre: &str) -> Result<(), String> {
     println!("Configurando el puerto '{}' en DHCP", nombre);
     let script = format!(
@@ -309,7 +408,8 @@ pub fn run() {
             cambiar_config_puerto, 
             configurar_puerto_dhcp, 
             get_username,
-            tomar_datos_ipv6
+            tomar_datos_ipv6,
+            cambiar_config_puerto_ipv6
             ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
