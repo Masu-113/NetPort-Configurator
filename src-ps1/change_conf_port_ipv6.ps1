@@ -21,7 +21,7 @@ try {
     #logica para manejar la vlan
     if ($vlan -ne $null -and $vlan -ne "" -and $vlan -ne "NULL" -and $vlan -ne "Null"){
         Write-Output "Configurando Vlan id: $vlan..."
-        Set-NetAdapterAdvancedProperty -Name $name -DisplayName "VLAN ID" -DisplayValue $vlan
+        Set-NetAdapterAdvancedProperty -Name $nombre -DisplayName "VLAN ID" -DisplayValue $vlan
     } else {
         Write-Output "Eliminando configuracion de VLAN para el puerto $nombre..."
         Set-NetAdapterAdvancedProperty -Name $nombre -DisplayName "VLAN ID" -DisplayValue 0
@@ -43,7 +43,13 @@ try {
     # Configurar la puerta de enlace, si se proporciona
     if ($gateway -ne $null -and $gateway -ne "" -and $gateway -ne "NULL" -and $gateway -ne "Null") {
         Write-Output "Configurando puerta de enlace: $gateway..."
-        New-NetRoute -InterfaceAlias $nombre -DestinationPrefix '::/0' -NextHop $gateway -AddressFamily IPv6
+
+        $existingRoute = Get-NetRoute -InterfaceAlias $nombre -DestinationPrefix '::/0' -ErrorAction SilentlyContinue
+        if(-not $existingRoute){
+            New-NetRoute -InterfaceAlias $nombre -DestinationPrefix '::/0' -NextHop $gateway -AddressFamily IPv6
+        } else {
+            Write-Output "La ruta ya existe, no se necesita crear una nueva"
+        }
     }
 
     Write-Output "Configuración completada para el puerto: $nombre"

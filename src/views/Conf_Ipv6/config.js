@@ -88,7 +88,7 @@ async function cargarDatosIpv6() {
 function editarPuerto(nombre, ip, preixlength, vlan, status, getaway){
     document.querySelector("#edit-nombre").value = nombre;
     document.querySelector("#edit-ip").value = ip;
-    document.querySelector("#edit-preixlength").value = preixlength;
+    document.querySelector("#edit-prefixlength").value = preixlength;
     document.querySelector("#edit-vlan").value = vlan;
     document.querySelector("#edit-status").value = status;
     document.querySelector("#edit-puerta-enlace").value = getaway;
@@ -99,7 +99,7 @@ async function guardarCambios() {
     const datos = {
         nombre: document.querySelector("#edit-nombre").value,
         ip: document.querySelector("#edit-ip").value,
-        mask: document.querySelector("#edit-preixlength").value,
+        prefixlength: document.querySelector("#edit-prefixlength").value,
         vlan: document.querySelector("#edit-vlan").value,
         getaway: document.querySelector("#edit-puerta-enlace").value
     }
@@ -115,6 +115,19 @@ async function guardarCambios() {
     }
 }
 
+// ---------- Funcion para mostrar notificaciones ---------- //
+function mostrarNotificacion(mensaje, tipo) {
+  const contenedor = document.getElementById("notification-container");
+  const notificacion = document.createElement("div");
+  notificacion.classList.add("notification", tipo);
+  notificacion.textContent = mensaje;
+
+  contenedor.appendChild(notificacion);
+
+  setTimeout(() => {
+    contenedor.removeChild(notificacion);
+  }, 4000);
+}
 
 // ---------- Funcion Debpunce -------- //
 function debounce(func, wait){

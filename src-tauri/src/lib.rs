@@ -214,6 +214,7 @@ fn cambiar_config_puerto(datos: serde_json::Value) -> Result<(), String> {
         Ok(())
     } else {
         let error_message = String::from_utf8_lossy(&output.stderr);
+        println!("Error: {}", error_message);
         Err(format!(
             "Error al modificar la configuración del puerto: {}",
             error_message
@@ -227,7 +228,7 @@ fn cambiar_config_puerto_ipv6(datos: serde_json::Value) -> Result<(), String> {
     let ip = datos["ip"].as_str().unwrap_or("");
     let prefixlength = datos["prefixlength"].as_str().unwrap_or("");
     let vlan = datos["vlan"].as_str().unwrap_or("");
-    let gateway = datos["gateway"].as_str().unwrap_or("");
+    let gateway = datos["getaway"].as_str().unwrap_or("");
     
 
     println!(
@@ -236,8 +237,8 @@ fn cambiar_config_puerto_ipv6(datos: serde_json::Value) -> Result<(), String> {
     );
 
     let script = format!(
-        r#"
-        Write-Output "Modificacion del puerto: {nombre}"
+         r#"
+        Write-Output "Modificación del puerto: {nombre}"
         Write-Output "Nueva IP: {ip}"
         Write-Output "Nueva Máscara: {prefixlength}"
         Write-Output "Nuevo VLAN ID: {vlan}"
@@ -257,26 +258,30 @@ fn cambiar_config_puerto_ipv6(datos: serde_json::Value) -> Result<(), String> {
                 Set-NetAdapterAdvancedProperty -Name "{nombre}" -DisplayName "VLAN ID" -DisplayValue 0
             }}
 
-            #verificar si hay una Ipv6 existente
-            $existing_ipv6 = Get-NetIPAddress -InterfaceAlias {nombre} -AddressFamily "IPv6" -ErrorAction SilentlyContinue
+            # Verificar si hay una dirección IPv6 existente
+            $existing_ipv6 = Get-NetIPAddress -InterfaceAlias "{nombre}" -AddressFamily "IPv6" -ErrorAction SilentlyContinue
             
-            if ($existing_ipv6){{
-                Write-Output "Eliminando direccion Ipv6 existente: $($existing_ipv6).IPAdress"
-                Remove-NetIPAddress -InterfaceAlias {nombre} -IPAddress $existing_ipv6.IPAddress -Confirm:false
+            if ($existing_ipv6) {{
+                Write-Output "Eliminando dirección IPv6 existente: $($existing_ipv6.IPAddress)..."
+                Remove-NetIPAddress -InterfaceAlias "{nombre}" -IPAddress $existing_ipv6.IPAddress -Confirm:$false
             }}
             
-            #Configurar la nueva direccion Ipv6
-            Write-Output "Configurando la nueva direccion Ipv6: {ip} con prefijo de longitu {prefixlength} ... "
-            New-NetIPAddress -InterfaceAlias {nombre} -IPAddress {ip} -PrefixLength {prefixlength} -AddressFamily "IPv6"
+            # Configurar la nueva dirección IPv6
+            Write-Output "Configurando nueva dirección IPv6: {ip} con prefijo {prefixlength}..."
+            New-NetIPAddress -InterfaceAlias "{nombre}" -IPAddress "{ip}" -PrefixLength {prefixlength} -AddressFamily "IPv6"
 
             # Configurar la puerta de enlace
-            if({gateway} -ne "" -and {gateway} -ne "" -and {gateway} -ne "NULL" -and {gateway} -ne "Null"){{
-                Write-Output "Configurando puerta de enlace: {gateway} ..."
-                New-NetRoute -InterfaceAlias {nombre} -DestinationPrefix '::/0' -NextHop {gateway} -AddressFamily "Ipv6" 
+            if ("{gateway}" -ne "" -and "{gateway}" -ne "NULL" -and "{gateway}" -ne "Null") {{
+                Write-Output "Configurando puerta de enlace: {gateway}..."
+                $existingRoute = Get-NetRoute -InterfaceAlias "{nombre}" -DestinationPrefix "::/0" -ErrorAction SilentlyContinue
+                if (-not $existingRoute) {{
+                    New-NetRoute -InterfaceAlias "{nombre}" -DestinationPrefix "::/0" -NextHop "{gateway}" -AddressFamily "IPv6"
+                }} else {{
+                    Write-Output "La ruta ya existe, no se necesita crear una nueva."
+                }}
             }}
 
             Write-Output "Configuración completada para el puerto: {nombre}"
-        
         
         }} catch {{
             Write-Output "Error al aplicar la configuración: $_"
@@ -308,6 +313,7 @@ fn cambiar_config_puerto_ipv6(datos: serde_json::Value) -> Result<(), String> {
         Ok(())
     } else {
         let error_message = String::from_utf8_lossy(&output.stderr);
+        println!("Error: {}", error_message);
         Err(format!(
             "Error al modificar la configuración del puerto: {}",
             error_message
