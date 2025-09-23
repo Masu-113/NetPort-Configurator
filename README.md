@@ -21,6 +21,23 @@
 
 ---
 
+## Tabla de contenido
+
+1. [Introducción](#netport-configurator)
+2. [Características](#características)
+3. [Requisitos previos](#requisitos-previos)
+4. [Instalación para desarrollo](#instalación-para-desarrollo)
+5. [Modificar Iconos de la Aplicación](#modificar-iconos-de-la-aplicacion)
+6. [Recomendaciones de uso](#recomendaciones-de-uso)
+7. [Compilación para distribución](#compilación-para-distribución)
+8. [Instaladores](#instaladores)
+9. [Notas sobre la aplicación](#notas-sobre-la-aplicacion)
+10. [Estructura del Proyecto](#estructura-del-proyecto)
+11. [Changelog](#changelog)
+11. [Creditos](#creditos)
+
+---
+
 # NetPort Configurator
 
 Aplicación de escritorio para **Windows**, desarrollada con **Tauri** y **HTML/CSS/JavaScript**, diseñada para visualizar y modificar configuraciones de puertos de red de manera sencilla a través de una interfaz gráfica.
@@ -280,6 +297,11 @@ Agregar esto en el `"bundle"` , una vez agregado en caso de mostrar errores revi
     ├── scripts/            # Scripts PowerShell (.ps1) para cambios de red
     ├── package.json        # Configuración del proyecto y scripts npm
     └── README.md           # Documentación del proyecto
+
+---
+
+## Changelog
+**Para ver las versiones y cambios, consulta el archivo [changelog.md](changelog.md).**
 
 ---
 
