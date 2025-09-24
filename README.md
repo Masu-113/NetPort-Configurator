@@ -13,9 +13,17 @@
 
 <!-- Badges -->
 <p align="center">
-  <img src="https://img.shields.io/badge/Plataforma-Windows-blue?style=flat-square" alt="Windows">
-  <img src="https://img.shields.io/badge/Tauri-v2.x-orange?style=flat-square" alt="Tauri v2">
-  <img src="https://img.shields.io/badge/Licencia-Pendiente-lightgrey?style=flat-square" alt="Licencia">
+
+  <a href="https://www.microsoft.com/es-es/windows" target="_blank">
+    <img src="https://img.shields.io/badge/Plataforma-Windows-blue?style=flat-square" alt="Windows">
+  </a>
+  <a href="https://tauri.app/start/" target="_blank">
+    <img src="https://img.shields.io/badge/Tauri-v2.x-orange?style=flat-square" alt="Tauri v2">
+  </a>
+
+  <a href="https://github.com/Masu-113/NetPort-Configurator/blob/main/LICENSE" target="_blank">
+    <img src="https://img.shields.io/badge/Licencia-MIT-green?style=flat-square" alt="Licencia">
+  </a>
   <img src="https://img.shields.io/badge/Estado-En%20Desarrollo-yellow?style=flat-square" alt="Estado">
 </p>
 
