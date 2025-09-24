@@ -1,6 +1,6 @@
 <!-- Logo del proyecto -->
 <p align="center">
-  <img src="src\assets\LogoNetPot.png" alt="NetPort Configurator Logo" width="350">
+  <img src="src\assets\logoNetPort.png" alt="NetPort Configurator Logo" width="350">
 </p>
 
 ---
@@ -13,16 +13,28 @@
 
 <!-- Badges -->
 <p align="center">
-
-  <a href="https://www.microsoft.com/es-es/windows" target="_blank">
-    <img src="https://img.shields.io/badge/Plataforma-Windows-blue?style=flat-square" alt="Windows">
-  </a>
-  <a href="https://tauri.app/start/" target="_blank">
-    <img src="https://img.shields.io/badge/Tauri-v2.x-orange?style=flat-square" alt="Tauri v2">
-  </a>
+  <img src="https://img.shields.io/badge/Plataforma-Windows-blue?style=flat-square" alt="Windows">
+  <img src="https://img.shields.io/badge/Tauri-v2.x-orange?style=flat-square" alt="Tauri v2">
   <img src="https://img.shields.io/badge/Licencia-Pendiente-lightgrey?style=flat-square" alt="Licencia">
   <img src="https://img.shields.io/badge/Estado-En%20Desarrollo-yellow?style=flat-square" alt="Estado">
 </p>
+
+---
+
+## Tabla de contenido
+
+1. [Introducción](#netport-configurator)
+2. [Características](#características)
+3. [Requisitos previos](#requisitos-previos)
+4. [Instalación para desarrollo](#instalación-para-desarrollo)
+5. [Modificar Iconos de la Aplicación](#modificar-iconos-de-la-aplicacion)
+6. [Recomendaciones de uso](#recomendaciones-de-uso)
+7. [Compilación para distribución](#compilación-para-distribución)
+8. [Instaladores](#instaladores)
+9. [Notas sobre la aplicación](#notas-sobre-la-aplicacion)
+10. [Estructura del Proyecto](#estructura-del-proyecto)
+11. [Changelog](#changelog)
+11. [Creditos](#creditos)
 
 ---
 
@@ -270,7 +282,7 @@ Agregar esto en el `"bundle"` , una vez agregado en caso de mostrar errores revi
 
     - Importante: la manipulacion de configuraciones de red puede afectar la conectividad del sistema, *Usar con precaucion*.
 
-    - Revisar el manual de usuario que brinda NetPort: [Manual de Usuario](https://github.com/Masu-113/NetPort/blob/msuarez/documentacion/ManualDeUsuario-NetPort.pdf).
+    - Revisar el manual de usuario que brinda NetPort: [Manual de Usuario](documentacion/ManualDeUsuario-NetPort_v1.0.pdf).
 
 ---
 
@@ -285,6 +297,11 @@ Agregar esto en el `"bundle"` , una vez agregado en caso de mostrar errores revi
     ├── scripts/            # Scripts PowerShell (.ps1) para cambios de red
     ├── package.json        # Configuración del proyecto y scripts npm
     └── README.md           # Documentación del proyecto
+
+---
+
+## Changelog
+**Para ver las versiones y cambios, consulta el archivo [changelog.md](https://github.com/Masu-113/NetPort-Configurator/blob/develop/CHANGELOG.md).**
 
 ---
 
