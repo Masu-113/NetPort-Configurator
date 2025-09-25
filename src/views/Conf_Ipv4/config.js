@@ -105,7 +105,7 @@ async function guardarCambios() {
     gateway: document.querySelector("#edit-puerta-enlace").value
   };
 
-  if (!validar_datos(datos)) {
+  if (!await validar_datos(datos)) {
     return;
   }
 
@@ -121,8 +121,8 @@ async function guardarCambios() {
 }
 
 // -------- Funcion para validar los datos ingresados a modificar ------- //
-function validar_datos(datos) {
-  const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+async function validar_datos(datos) {
+  //const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
   const soloNumeros = /^\d+$/;
 
   if (!datos.nombre || !datos.ip || !datos.mask) {
@@ -130,7 +130,7 @@ function validar_datos(datos) {
     return false;
   }
 
-  if (!ipRegex.test(datos.ip) || !validarIP(datos.ip)) {
+  if (!await validarIP(datos.ip)) {
     mostrarNotificacion("La dirección IP no es válida.", "error");
     return false;
   }
@@ -145,7 +145,7 @@ function validar_datos(datos) {
     return false;
   }
 
-  if (datos.gateway && !ipRegex.test(datos.gateway) && datos.gateway !== null && datos.gateway !== "" && datos.gateway.toLowerCase() !== "null") {
+  if (datos.gateway && !await validarIP(datos.gateway) && datos.gateway !== null && datos.gateway !== "" && datos.gateway.toLowerCase() !== "null") {
     mostrarNotificacion("La puerta de enlace no es válida.", "error");
     return false;
   }
@@ -154,12 +154,14 @@ function validar_datos(datos) {
 }
 
 // ---- Funcion para validar IP ----
-function validarIP(ip) {
-  const octetos = ip.split('.');
-  return octetos.length === 4 && octetos.every(o => {
-    const numero = parseInt(o, 10);
-    return numero >= 0 && numero <= 255;
-  });
+async function validarIP(ip) {
+  try {
+    const valido = await invoke("validar_ipv4", {ip});
+    return valido;
+  } catch (e){
+    console.error("Error validando Ipv4: ", e);
+    return false;
+  }
 }
 
 // ---- Función para validar máscara ---- //

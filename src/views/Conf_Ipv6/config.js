@@ -37,7 +37,7 @@ async function cargarDatosIpv6() {
 
     lineas.forEach(linea => {
       if (!linea.trim()) return;
-      const [nombre, ip, mask, vlan, status, getaway] = linea.split("|");
+      const [nombre, ip, mask, vlan, status, gateway] = linea.split("|");
 
       const fila = document.createElement("div");
       fila.classList.add("fila");
@@ -54,7 +54,7 @@ async function cargarDatosIpv6() {
           mostrarNotificacion("No tienes privilegios necesarios para editar.", "error");
           return;
         }*/
-        editarPuerto(nombre, ip, mask, vlan, status, getaway);
+        editarPuerto(nombre, ip, mask, vlan, status, gateway);
       };
 
       if (document.body.classList.contains('dark-mode')) {
@@ -65,7 +65,7 @@ async function cargarDatosIpv6() {
         <div class="col">${nombre?.trim() || "—"}</div>
         <div class="col">${ip?.trim() || "—"}</div>
         <div class="col">${mask?.trim() || "—"}</div>
-        <div class="col">${getaway?.trim() || "—"}</div>
+        <div class="col">${gateway?.trim() || "—"}</div>
         <div class="col">${vlan?.trim() || "—"}</div>
         <div class="col estado">
           <span class="circulo ${status?.trim() === "Up" ? "verde" : "rojo"}"></span>
@@ -85,13 +85,13 @@ async function cargarDatosIpv6() {
 
 
 // ---------- llenar car de edicion de los puertos seleccionados ---------- //
-function editarPuerto(nombre, ip, preixlength, vlan, status, getaway){
+function editarPuerto(nombre, ip, preixlength, vlan, status, gateway){
     document.querySelector("#edit-nombre").value = nombre;
     document.querySelector("#edit-ip").value = ip;
     document.querySelector("#edit-prefixlength").value = preixlength;
     document.querySelector("#edit-vlan").value = vlan;
     document.querySelector("#edit-status").value = status;
-    document.querySelector("#edit-puerta-enlace").value = getaway;
+    document.querySelector("#edit-puerta-enlace").value = gateway;
 }
 
 // ---------- Mandar los datos a modificar de los puertos a change_conf_port_ipv6 ----------- //
@@ -101,7 +101,11 @@ async function guardarCambios() {
         ip: document.querySelector("#edit-ip").value,
         prefixlength: document.querySelector("#edit-prefixlength").value,
         vlan: document.querySelector("#edit-vlan").value,
-        getaway: document.querySelector("#edit-puerta-enlace").value
+        gateway: document.querySelector("#edit-puerta-enlace").value
+    }
+
+    if (!await validar_datos(datos)){
+      return;
     }
     
     try {
@@ -113,6 +117,47 @@ async function guardarCambios() {
         console.log("Error al aplicar los cambios: ", e);
         mostrarNotificacion("Error al aplicar cambios: " + e.message, "error")
     }
+}
+
+// ---------- Funcion para validar los datos ingresados
+async function validar_datos(datos){
+  const soloNum = /^\d+$/;
+
+  if (!datos.nombre || !datos.ip  || !datos.prefixlength){
+    mostrarNotificacion("llenar todos los campos obligatorios (Nombre, Ip, longitud de prefijo)", "error");
+    return false;
+  }
+
+  if (!await validarIP(datos.ip)){
+    mostrarNotificacion("El ip ingresado no es valido.", "error");
+    return false;
+  }
+
+  if (datos.vlan !==  null && datos.vlan !== "" &&  datos.vlan.toLowerCase() !== "null" && !soloNum.test(datos.vlan)){
+    mostrarNotificacion("La Vlan debe ser un numero entero o NULL.", "error");
+  }
+
+  if(datos.prefixlength < 0 && datos.prefixlength > 128){
+    mostrarNotificacion("Error, la longitud de prefijo es de 0 a 128.", "error");
+    return false;
+  }
+
+  if(datos.gateway && !await validarIP(datos.gateway) && datos.gateway !== null && datos.gateway !== "" && datos.gateway.toLowerCase() !== "null"){
+    mostrarNotificacion("la puerta de enlace no es valida: ", "error");
+    return false
+  }
+
+  return true;
+}
+
+async function validarIP(ip) {
+  try {
+    const valido = await invoke ("validar_ipv6", {ip});
+    return valido;
+  } catch (e){
+    console.error("Error validando Ipv6: ", e);
+    return false;
+  }
 }
 
 // ---------- Funcion para mostrar notificaciones ---------- //

@@ -5,7 +5,7 @@ use std::os::windows::process::CommandExt;
 use std::{env};
 
 
-//funcion para obtener los adaptadores de red
+//---------- funcion para obtener los adaptadores de red ------------//
 #[tauri::command]
 async fn ejecutar_powershell() -> Result<String, String> {
     let script = r#"
@@ -139,7 +139,7 @@ async fn tomar_datos_ipv6() -> Result<String, String> {
     }
 }
 
-
+//---------- Modifica la configuracion del ipv4 ----------//
 #[tauri::command]
 fn cambiar_config_puerto(datos: serde_json::Value) -> Result<(), String> {
     let nombre = datos["nombre"].as_str().unwrap_or("");
@@ -222,6 +222,7 @@ fn cambiar_config_puerto(datos: serde_json::Value) -> Result<(), String> {
     }
 }
 
+//---------- Modifica la configuracion del ipv6 -----------//
 #[tauri::command]
 fn cambiar_config_puerto_ipv6(datos: serde_json::Value) -> Result<(), String> {
     let nombre = datos["nombre"].as_str().unwrap_or("");
@@ -321,9 +322,7 @@ fn cambiar_config_puerto_ipv6(datos: serde_json::Value) -> Result<(), String> {
     }
 }
 
-
-
-
+//----------- Configura el puerto seleccionado a DHCP -----------//
 #[tauri::command]
 fn configurar_puerto_dhcp(nombre: &str) -> Result<(), String> {
     println!("Configurando el puerto '{}' en DHCP", nombre);
@@ -384,6 +383,7 @@ fn configurar_puerto_dhcp(nombre: &str) -> Result<(), String> {
     }
 }
 
+//------------- Toma el nombre de usuario y los privilegios que este posee ----------//
 #[tauri::command]
 fn get_username() -> (String, bool) {
     let username = env::var("USER")
@@ -403,7 +403,16 @@ fn get_username() -> (String, bool) {
     (username, is_admin)
 }
 
-
+//---------- Funcion para validar el ipv4 -----------//
+#[tauri::command]
+fn validar_ipv4(ip: String) -> bool {
+    ip.parse::<std::net::Ipv4Addr>().is_ok()
+}
+//---------- Funcion para validar el ipv6 -----------//
+#[tauri::command]
+fn validar_ipv6(ip: String) -> bool {
+    ip.parse::<std::net::Ipv6Addr>().is_ok()
+}
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -415,7 +424,9 @@ pub fn run() {
             configurar_puerto_dhcp, 
             get_username,
             tomar_datos_ipv6,
-            cambiar_config_puerto_ipv6
+            cambiar_config_puerto_ipv6,
+            validar_ipv4,
+            validar_ipv6
             ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
