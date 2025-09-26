@@ -120,35 +120,38 @@ async function guardarCambios() {
 }
 
 // ---------- Funcion para validar los datos ingresados
-async function validar_datos(datos){
+async function validar_datos(datos) {
+  const prefixlength = Number.parseInt(datos.prefixlength);
   const soloNum = /^\d+$/;
 
-  if (!datos.nombre || !datos.ip  || !datos.prefixlength){
-    mostrarNotificacion("llenar todos los campos obligatorios (Nombre, Ip, longitud de prefijo)", "error");
+  if (!datos.nombre || !datos.ip || !datos.prefixlength) {
+    mostrarNotificacion("Llenar todos los campos obligatorios (Nombre, Ip, longitud de prefijo)", "error");
     return false;
   }
 
-  if (!await validarIP(datos.ip)){
-    mostrarNotificacion("El ip ingresado no es valido.", "error");
+  if (!await validarIP(datos.ip)) {
+    mostrarNotificacion("El IP ingresado no es válido.", "error");
     return false;
   }
 
-  if (datos.vlan !==  null && datos.vlan !== "" &&  datos.vlan.toLowerCase() !== "null" && !soloNum.test(datos.vlan)){
-    mostrarNotificacion("La Vlan debe ser un numero entero o NULL.", "error");
-  }
-
-  if(datos.prefixlength < 0 && datos.prefixlength > 128){
-    mostrarNotificacion("Error, la longitud de prefijo es de 0 a 128.", "error");
+  if (datos.vlan !== null && datos.vlan !== "" && datos.vlan.toLowerCase() !== "null" && !soloNum.test(datos.vlan)) {
+    mostrarNotificacion("La VLAN debe ser un número entero o NULL.", "error");
     return false;
   }
 
-  if(datos.gateway && !await validarIP(datos.gateway) && datos.gateway !== null && datos.gateway !== "" && datos.gateway.toLowerCase() !== "null"){
-    mostrarNotificacion("la puerta de enlace no es valida: ", "error");
-    return false
+  if (prefixlength < 0 || prefixlength > 128) {
+    mostrarNotificacion("Error, la longitud de prefijo debe estar entre 0 y 128.", "error");
+    return false;
+  }
+
+  if (datos.gateway && !await validarIP(datos.gateway) && datos.gateway !== null && datos.gateway !== "" && datos.gateway.toLowerCase() !== "null") {
+    mostrarNotificacion("La puerta de enlace no es válida.", "error");
+    return false;
   }
 
   return true;
 }
+
 
 async function validarIP(ip) {
   try {
@@ -157,6 +160,70 @@ async function validarIP(ip) {
   } catch (e){
     console.error("Error validando Ipv6: ", e);
     return false;
+  }
+}
+
+//---------- FUncion para modificar la configuracion del puerto a DHCP -----------//
+async function configurarPuerto_DHCP(){
+  const nombre = document.querySelector("#edit-nombre").value;
+
+  try {
+    const resultado = await invoke('configurar_puerto_dhcp_ipv6', {nombre});
+    mostrarNotificacion("Se modifico el Ipv6 del puerto a DHCP.", "success");
+  } catch (e){
+    console.error("Error al configurar el puerto: ", e);
+    mostrarNotificacion("Ocurrio un error al intentar configurar el puerto a DHCP.", "error");
+  }
+}
+
+// ----- Confirmar la configuración a DHCP ------ //
+function confirmarConfiguracionDHCP() {
+  const nombre = document.querySelector("#edit-nombre").value;
+
+  if (!nombre) {
+    mostrarNotificacion("Por favor, selecciona un puerto antes de configurar a DHCP.", "error");
+    return;
+  }
+
+  mostrarNotificacionConConfirmacion(`¿Está seguro de que desea reiniciar el puerto "${nombre}" y configurarlo en DHCP?`, async () => {
+    await configurarPuertoADHCP();
+  });
+}
+
+// ----- Mostrar notificación con confirmación ------ //
+function mostrarNotificacionConConfirmacion(mensaje, callback) {
+  const contenedor = document.getElementById("confirmation-container");
+  const notificacion = document.createElement("div");
+  notificacion.classList.add("notification", "confirm");
+  notificacion.innerHTML = `
+    <p>${mensaje}</p>
+    <button id="confirmar">Sí</button>
+    <button id="cancelar">No</button>
+  `;
+
+  contenedor.appendChild(notificacion);
+
+  document.getElementById("confirmar").onclick = () => {
+    callback();
+    contenedor.removeChild(notificacion);
+  };
+
+  document.getElementById("cancelar").onclick = () => {
+    console.log("Configuración a DHCP cancelada.");
+    contenedor.removeChild(notificacion);
+  };
+}
+
+// ----- Modificar la configurar del puerto a DHCP ------ //
+async function configurarPuertoADHCP() {
+  const nombre = document.querySelector("#edit-nombre").value;
+
+  try {
+    const resultado = await invoke('configurar_puerto_dhcp', { nombre });
+    mostrarNotificacion("Se modifico el puerto a DHCP.", "success");
+  } catch (error) {
+    console.error("Error al configurar el puerto:", error);
+    mostrarNotificacion("Ocurrió un error al intentar configurar el puerto a DHCP.", "error");
   }
 }
 
@@ -187,6 +254,16 @@ function debounce(func, wait){
 }
 
 // ---------- Acciones de los botones ---------- //
+
+document.addEventListener("DOMContentLoaded", () => {
+  const btnAplicarCambios = document.querySelector("#btn-configurar-dhcp");
+   if(btnAplicarCambios){
+    btnAplicarCambios.addEventListener("click", debounce(confirmarConfiguracionDHCP,1000));
+   } else {
+    console.error("Boton de aplicar cambios no emcpntrado.");
+   }
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   const btnBuscar = document.querySelector("#btn-buscar");
   if (btnBuscar) {
