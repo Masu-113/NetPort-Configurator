@@ -1,4 +1,3 @@
-
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 use std::process::{Command, Stdio};
 use std::os::windows::process::CommandExt;
@@ -250,7 +249,7 @@ fn cambiar_config_puerto_ipv6(datos: serde_json::Value) -> Result<(), String> {
             Write-Output "Deshabilitando DHCP en la interfaz {nombre}..."
             Get-NetIPInterface -InterfaceAlias "{nombre}" -AddressFamily "IPv6" | Set-NetIPInterface -Dhcp Disabled
 
-            # Lógica para manejar VLAN
+            # Modificar VLAN
             if ("{vlan}" -ne "" -and "{vlan}" -ne "NULL" -and "{vlan}" -ne "Null") {{
                 Write-Output "Configurando VLAN ID: {vlan}..."
                 Set-NetAdapterAdvancedProperty -Name "{nombre}" -DisplayName "VLAN ID" -DisplayValue "{vlan}"
@@ -277,7 +276,7 @@ fn cambiar_config_puerto_ipv6(datos: serde_json::Value) -> Result<(), String> {
                 $existingRoute = Get-NetRoute -InterfaceAlias "{nombre}" -DestinationPrefix "::/0" -ErrorAction SilentlyContinue
                 if (-not $existingRoute) {{
                     New-NetRoute -InterfaceAlias "{nombre}" -DestinationPrefix "::/0" -NextHop "{gateway}" -AddressFamily "IPv6"
-                }} else {{
+                }} else {{  
                     Write-Output "La ruta ya existe, no se necesita crear una nueva."
                 }}
             }}
@@ -383,6 +382,61 @@ fn configurar_puerto_dhcp(nombre: &str) -> Result<(), String> {
     }
 }
 
+//---------- Configurar el puerto seleccionado del ipv6 a dhcp ------------//
+#[tauri::command]
+fn configurar_puerto_dhcp_ipv6(nombre: &str) ->  Result<(), String>{
+    println!("Configurando el puerto '{}' en DHCP", nombre);
+    let script = format!(
+        r#"
+        if (-not "{nombre}") {{
+            Write-Error "No se eh proporcionado un nombre de adaptador."
+            exit 1
+        }}
+
+        try {{
+            # Obtener el adaptador de red
+            $adapter = Get-NetAdapter -Name "{nombre}" -ErrorAction Stop
+
+            #Ellimar rutas de puerta de enlace existentes del ipv6
+            $routes = Get-NetRoute -InterfaceAlias $adapter.Name -ErrorAction SilentlyContinue | Where-Objet {{ $_.DestinationPrefix -eq "::/0"}}
+            foreach ($route in $routes){{
+                Remove-NetRoute -InterfaceAlias $adapter.Name -DestinationPrefix $route.DestinationPrefix -NextHop $route.NextHop -Confirm:$false
+            }}
+
+            #configurar el adaptador para activar el dhcp
+            Set-NetIPInterface -InterfaceAlias $adapter.Name -Dhcp Enabled
+
+
+
+            # Configurar DNS automatico para Ipv6
+            Set-DnsClienteServerAddress  -InterfaceAlias $adapter.Name -ResetServerAddresses
+            cmd.exe /c "netsh interface ipv6 set address name=""{nombre}"" auto"
+
+            Write-Output "El adapatdor '{nombre}' ha sido configurado correctamente para el DHCP del ipv6."
+        }} catch {{
+            Write-Error "Error al configurar el adaptador: $_"
+            exit 1
+         }}
+        "#
+    );
+    let output = Command::new("powershell.exe")
+        .args(&["-WindowStyle", "Hidden", "-Command", &script])
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .creation_flags(0x08000000)
+        .output()
+        .expect("failed to execute command");
+
+    if output.status.success() {
+        let success_message = String::from_utf8_lossy(&output.stdout);
+        println!("Salida del script: {}", success_message);
+        Ok(())
+    } else {
+        let error_message = String::from_utf8_lossy(&output.stderr);
+        Err(format!("Error al configurar el puerto en DHCPv6: {}", error_message))
+    }
+}
+
 //------------- Toma el nombre de usuario y los privilegios que este posee ----------//
 #[tauri::command]
 fn get_username() -> (String, bool) {
@@ -425,6 +479,7 @@ pub fn run() {
             get_username,
             tomar_datos_ipv6,
             cambiar_config_puerto_ipv6,
+            configurar_puerto_dhcp_ipv6,
             validar_ipv4,
             validar_ipv6
             ])
