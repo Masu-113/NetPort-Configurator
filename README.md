@@ -1,7 +1,10 @@
 <!-- Logo del proyecto -->
 <p align="center">
+  <img src="src\assets\logoNetPort.png" alt="NetPort Configurator Logo" width="350">
   <img src="src\assets\LogoNetPot.png" alt="NetPort Configurator Logo" width="350">
 </p>
+
+---
 
 ---
 
@@ -21,6 +24,23 @@
 
 ---
 
+## Tabla de contenido
+
+1. [Introducción](#netport-configurator)
+2. [Características](#características)
+3. [Requisitos previos](#requisitos-previos)
+4. [Instalación para desarrollo](#instalación-para-desarrollo)
+5. [Modificar Iconos de la Aplicación](#modificar-iconos-de-la-aplicacion)
+6. [Recomendaciones de uso](#recomendaciones-de-uso)
+7. [Compilación para distribución](#compilación-para-distribución)
+8. [Instaladores](#instaladores)
+9. [Notas sobre la aplicación](#notas-sobre-la-aplicacion)
+10. [Estructura del Proyecto](#estructura-del-proyecto)
+11. [Changelog](#changelog)
+11. [Creditos](#creditos)
+
+---
+
 # NetPort Configurator
 
 Aplicación de escritorio para **Windows**, desarrollada con **Tauri** y **HTML/CSS/JavaScript**, diseñada para visualizar y modificar configuraciones de puertos de red de manera sencilla a través de una interfaz gráfica.
@@ -32,11 +52,13 @@ Esta herramienta permite a los administradores y técnicos de redes cambiar ráp
 - **Máscara de subred**
 - **Puerta de enlace**
 - **DHCP**
+- **DHCP**
 
 Incluye scripts **PowerShell (.ps1)** integrados que se ejecutan con permisos elevados para realizar las configuraciones directamente en el sistema.
 
 ---
 
+## Características
 ## Características
 
 - Visualización de puertos de red disponibles en el equipo.
@@ -48,6 +70,7 @@ Incluye scripts **PowerShell (.ps1)** integrados que se ejecutan con permisos el
 
 ---
 
+## Requisitos previos
 ## Requisitos previos
 
 Antes de ejecutar o compilar el proyecto, asegúrate de tener instalado:
@@ -61,6 +84,7 @@ Antes de ejecutar o compilar el proyecto, asegúrate de tener instalado:
 
 ---
 
+## Instalación para desarrollo
 ## Instalación para desarrollo
 
 1. **Clonar el repositorio**
@@ -77,6 +101,41 @@ Antes de ejecutar o compilar el proyecto, asegúrate de tener instalado:
 
 ---
 
+## Modificar Iconos de la Aplicacion
+
+La aplicacion de tauri por defecto ya trae iconos, para ocupar iconos personalizados:
+
+1. **Descargar una imagen `.ico`**
+
+2. **Pagina de donde saque el icono de mi aplicacion: [icon-icons.com](https://icon-icons.com/).**
+
+3. **Ocupar el comando:**
+    ```bash
+    npm run tauri icon --source ./src-tauri/icons/nombre_archivo.ico
+
+Este comando selecciona una imagen.ico personalizada que se haya descargado o creado, crea varias versiones del icono en distintos tamaños para utilizarlos en la aplicacion, genera un archivo `.icns` y carpetas con iconos para android y ios.
+
+4. **Una vez generados los iconos que se utilizaran se debe de modificar el archivo `tuari.conf.json`**
+    ```bash
+    {
+        "bundle": {
+            "icon": [
+            "icons/32x32.png",
+            "icons/128x128.png",
+            "icons/128x128@2x.png",
+            "icons/icon.icns",
+            "icons/icon.ico"
+            ]
+        }
+    }
+
+5. **Se recomienda que la salida coincida al menos con tauri icon: `32x32.png` , `128x128.png` , `128x128@2x.png` y `icon.png.` .**
+
+6. **En caso de crear uno mismo los iconos consultar documentacion de Tauri: [Creando iconos manualmente](https://v2.tauri.app/develop/icons/#creating-icons-manually).**
+
+---
+
+## Recomendaciones de uso
 ## Modificar Iconos de la Aplicacion
 
 La aplicacion de tauri por defecto ya trae iconos, para ocupar iconos personalizados:
@@ -134,16 +193,25 @@ Ejemplos:
 - Ver VLAN ID actual.
 - Modificar IP, máscara y puerta de enlace.
 - Eliminar configuraciones realizadas a un puerto y configurarlo a defecto en DHCP
+- Eliminar configuraciones realizadas a un puerto y configurarlo a defecto en DHCP
 - Guardar y aplicar cambios mediante scripts .ps1.
 
 ---
 
+## Compilación para distribución
 ## Compilación para distribución
 
 Generar ejecutable para Windows:
 
     
     npm run tauri build
+
+Compilacion cruzada
+
+
+    cargo-xwin.exe rustc --target x86_64-pc-windows-msvc
+
+Este comando realiza una compilación cruzada de un proyecto Rust para el x86_64-pc-windows-msvc
 
 Compilacion cruzada
 
@@ -255,15 +323,114 @@ Agregar esto en el `"bundle"` , una vez agregado en caso de mostrar errores revi
 2. **Permisos elevados.**
 
     - Se recomienda instalar la aplicacion en el disco: `C:\` para evitar errores al querer ejecutarla con el usuario administrador estando en otro usuario que no tenga estos privilegios. 
+- **Notas al realizar el empaquetamiento:**
 
+    1. **Al utilizar archivos externos como: `.ps1` se debe de modificar el `tauri.conf.json` de la siguiente manera:**
+        ```bash
+        "bundle": {
+        "active": true,
+        "targets": "all",
+        "resources": [
+            "../src-ps1/get_network_info.ps1",
+            "../src-ps1/change_conf_port.ps1",
+            "../src-ps1/change_conf_dhcp.ps1"
+        ],
+        "icon": [
+            "icons/32x32.png",
+            "icons/128x128.png",
+            "icons/128x128@2x.png",
+            "icons/icon.icns",
+            "icons/icon.ico"     
+            ]
+        }
+
+    2. **Al realizar esto cuando se empaqueta la aplicacion: `npm run tauri build` , el instalador generara una carpeta junto con la aplicacion con los archivos del programa, si esto no se hace la aplicacion buscara la ruta en la que se encuentran estos archivos y no los encontrara y retornara error.**
+
+    3. **En caso de que no se quieran generar esos archivos junto la aplicacion (Como hizo NetPort) añadir las funcionamiento de estas en el `lib.rs` y eliminar el `resources:[]` añadido anteriormente al archivo `tauiri.conf.json` , asi ya no es necesario crear la carpeta con archivos junto la aplicacion y no se corre el riesgo de que los usuarios manipuelen el contenido de estos archivos.**
+
+
+
+---
+
+## Instaladores
+
+Los instaladores generados despues de realizar el empaquetamiento tienen un diseño y caracteristicas por defecto, para realizar personalizar estos instaladores se requeiere modificar el archivo `tauri.conf.json` del proyecto.
+    
+
+    "windows": {
+      "allowDowngrades": true,
+      "certificateThumbprint": null,
+      "digestAlgorithm": null,
+      "nsis":{
+        "sidebarImage": "icons/DialogImagePath.bmp",
+        "installMode": "perMachine",
+        "languages": ["spanish"],
+        "startMenuFolder": "NetPort-app",
+        "installerIcon": "icons/icon.ico"
+      },
+      "signCommand": null,
+      "timestampUrl": null,
+      "tsp": false,
+      "webviewInstallMode": {
+        "silent": true,
+        "type": "embedBootstrapper"
+      },
+      "wix": {
+        "language": "es-ES",
+        "bannerPath": "icons/bannerPath.png",
+        "dialogImagePath": "icons/DialogImagePath.png"
+      }
+    }
+
+
+Agregar esto en el `"bundle"` , una vez agregado en caso de mostrar errores revisar la estrucuturacion del archivo `tauri.conf.json` ya que esto puede generar errores y que no reconozca algunas propiedades. Para modificar el instalador `.exe` modificar el apartado de **nsis** y para modificar el instalador `.msi` modificar el apartado de **wix**.
+
+ -  Notas de las propiedades de **wix**:
+    -   `lenguage`  esto modifica el idioma del instalador.
+    -   `bannerPath`    esto remplaza el banner que aparece en la segunda vista de la ventana que muestra el instalador.
+    -   `dialogImagePath`   esto modifica la imagen de fondo de la primera vista de la ventana al ejecutar el instalador(la img cubre el fondo de toda asa vista).
+
+-   Notas de las propiedades de **nsis**:
+    - `lenguages` esto modifica el idioma del instalador.
+    - `sidebarimage` esto modifica la imagen que sale al lado izquierdo de la primera visra de la ventana al ejecutar el instalador(la img no cubre todo el fondo de la vista solo esa parte).
+    - `installerIcon` modifica el icono que se muestra en el instalador en la barra superior de la ventana y tambien el icono que se muestra en la segunda vista de la ventana que muestra el instalador.
+    - `installMode` por defecto el instalador busca instalar el aplicativo en el usuario que ejecuto el instalador, con esta propiedad podemos modificarlo asignandole **"perMachine"** que instala el aplicativo en el disco `C:/` , (solicitara requisitos elevados para ejecutar el instalador).
+    - `startMenuFolder` modifica el nombre de la carpeta en la que se genera el aplicativo y el archivo de desinstalacion.
+
+**Estas son solo algunas de las propiedades que se pueden ocupar.**    
+
+---
+
+## Notas sobre la aplicacion.
+
+1. **Rutas a archivos externos.**
+
+    - Se recomienda que al declarara la ruta del archivo que se manda a llamar en el lib.rs sean declaradas de la siguiente manera:
+        ```bash
+        let script_path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../ruta_del_archivo");
+    
+    - Ya que al empaquetar el proyecto la aplicacion al ejecutar esa funcion buscara el archivo en la ruta en que se especifico y sino la encuentra mostrara error (Esto solo si el instalador crea los archivos junto el aplicativo).
+
+2. **Permisos elevados.**
+
+    - Se recomienda instalar la aplicacion en el disco: `C:\` para evitar errores al querer ejecutarla con el usuario administrador estando en otro usuario que no tenga estos privilegios. 
+
+    - La aplicacion utiliza scripts de `Powershell` que requieren permisos de Administrador.
+
+    - Para evitar que se soliciten credenciales cada vez que se utilice la aplicacion, se recomienda:
     - La aplicacion utiliza scripts de `Powershell` que requieren permisos de Administrador.
 
     - Para evitar que se soliciten credenciales cada vez que se utilice la aplicacion, se recomienda:
     
         1. creat un acceso directo con `runas`.
         2. configurar el almacenamiento seguro de credenciales de Windows.
+        1. creat un acceso directo con `runas`.
+        2. configurar el almacenamiento seguro de credenciales de Windows.
 
     - Importante: la manipulacion de configuraciones de red puede afectar la conectividad del sistema, *Usar con precaucion*.
+    - Importante: la manipulacion de configuraciones de red puede afectar la conectividad del sistema, *Usar con precaucion*.
+
+    - Revisar el manual de usuario que brinda NetPort: [Manual de Usuario](documentacion/ManualDeUsuario-NetPort_v1.0.pdf).
 
     - Revisar el manual de usuario que brinda NetPort: [Manual de Usuario](documentacion/ManualDeUsuario-NetPort_v1.0.pdf).
 
@@ -280,7 +447,29 @@ Agregar esto en el `"bundle"` , una vez agregado en caso de mostrar errores revi
     ├── scripts/            # Scripts PowerShell (.ps1) para cambios de red
     ├── package.json        # Configuración del proyecto y scripts npm
     └── README.md           # Documentación del proyecto
+## Estructura del Proyecto.
 
+    
+    ├── src/                # Archivos HTML, CSS y JS de la interfaz
+    ├── src-tauri/          # Configuración y código backend de Tauri
+    │   ├── icons/          # Iconos de la aplicación
+    │   ├── tauri.conf.json # Configuración principal de Tauri
+    │   └── ...
+    ├── scripts/            # Scripts PowerShell (.ps1) para cambios de red
+    ├── package.json        # Configuración del proyecto y scripts npm
+    └── README.md           # Documentación del proyecto
+
+---
+
+## Changelog
+**Para ver las versiones y cambios, consulta el archivo [changelog.md](https://github.com/Masu-113/NetPort-Configurator/blob/develop/CHANGELOG.md).**
+
+---
+
+## Creditos
+
+- **Marlon José Suárez Baltodano**: Desarrollador principal.
+- **Yelizabeth Danyali Ninoska Diaz Montano**: Responsable del diseño del logo eh icono del proyecto. [instagram](https://www.instagram.com/yelyaly14?igsh=YWlrMHVncjZ5MGVh)
 ---
 
 ## Creditos

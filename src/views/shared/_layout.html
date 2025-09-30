@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="../styles/styles.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="./main.js" defer></script>
+</head>
+
+<body>
+    <div id="notification-container" class="notification-container"></div>
+    <div id="confirmation-container"></div>
+    <div class="spinner"></div>
+    <img src="/assets/fondo-estampado-fluido-azul.png" alt="fondo" id="fondo">
+
+    <div class="sidebar" id="sidebar">
+        <div class="header">
+            <button class="toggle-btn" id="toggleBtn">☰</button>
+            <img src="/assets/logoNetPort.png" alt="logoNetPort" id="logo">
+        </div>
+        
+        <nav class="nav-menu" id="nav-menu">
+            <ul class="nav-list" id="nav-list">
+                <li><h4 id="username"></h4></li>
+                <li><a href="javascript:void(0);" class="nav-link" data-page="../Conf_Ipv4/index.html"><i class="fas fa-network-wired"></i> Configurar Ipv4</a></li>
+                <li><a href="javascript:void(0);" class="nav-link" data-page="../Conf_Ipv6/index.html"><i class="fas fa-network-wired"></i> Configurar Ipv6</a></li>
+                <li><a href="javascript:void(0);" class="nav-link" data-page="../home/about.html"><i class="fas fa-info-circle"></i> Acerca de</a></li>          
+                <label class="darkModeToggle">
+                    <input type="checkbox" id="darkModeToggle" />
+                    <span class="slider"></span>
+                    <span class="stars"></span>
+                </label>
+            </ul>
+            <div class="footer">
+                <p>&copy; 2025 NetPort-Configurator.</p>
+                <a href="https://github.com/Masu-113" target="_blank"><i class="fab fa-github"></i></a>
+                <p>Todos los derechos reservados.</p>
+            </div>
+        </nav>
+    </div>
+
+    <section class="content">
+        <main class="container" id="main-content">
+            <!-- Aquí se cargará el contenido dinámico -->
+        </main>
+    </section>
+
+    <script>
+        // Función para cargar contenido
+        function loadContent(page) {
+            fetch(page)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al cargar el contenido: ' + response.statusText);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    const mainContent = document.getElementById('main-content');
+                    mainContent.innerHTML = data;
+
+                    // --- Esto reaplica el modo oscuro a las vistas cargadas ---
+                    if (window.aplicarModoOscuro) {
+                    window.aplicarModoOscuro();
+                    }
+
+                    // --- Detectar la carpeta base de la vista cargada ---
+                    const basePath = page.substring(0, page.lastIndexOf("/")); 
+                    const scriptPath = `${basePath}/config.js`;
+
+                    // --- Importar dinamicamente el JS de la vista ---
+                    import(scriptPath)
+                        .then((module) => {
+                            if (typeof module.init === "function") {
+                                module.init(); // valida si existe "init"
+                            }
+                        })
+                        .catch(() => {
+                            console.log("No se encontró config.js para:", page);
+                        });
+                })
+                .catch(error => console.error('Error al cargar el contenido:', error));
+        }
+
+
+        // Delegación de eventos para los enlaces del menú
+        document.getElementById('nav-list').addEventListener('click', function(event) {
+            if (event.target.classList.contains('nav-link')) {
+                const page = event.target.getAttribute('data-page');
+               
+                loadContent(page);
+            }
+        });
+
+        // Cargar contenido inicial
+        loadContent('../Conf_Ipv4/index.html');
+    </script>
+</body>
+</html>
