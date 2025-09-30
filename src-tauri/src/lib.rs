@@ -1,7 +1,9 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
+use std::env;
 use std::os::windows::process::CommandExt;
-use std::{env};
+use std::process::{Command, Stdio};
 
+use tauri::Manager;
 
 //---------- funcion para obtener los adaptadores de red ------------//
 #[tauri::command]
@@ -124,65 +126,13 @@ async fn tomar_datos_ipv6() -> Result<String, String> {
 
     let output = tauri::async_runtime::spawn_blocking(move || {
         Command::new("powershell.exe")
-            .args(&["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", script])
-            .stdout(Stdio::piped())
-            .stderr(Stdio::piped())
-            .creation_flags(0x08000000)
-            .output()
-    })
-    .await
-    .map_err(|e| e.to_string())?
-    .map_err(|e| e.to_string())?;
-
-    if output.status.success() {
-        let s = String::from_utf8_lossy(&output.stdout).to_string();
-        Ok(s.trim().to_string())
-    } else {
-        let s = String::from_utf8_lossy(&output.stderr).to_string();
-        Err(s.trim().to_string())
-    }
-}
-
-// ---------- toma los datos de los puertos del ipv6 ----------//
-#[tauri::command]
-async fn tomar_datos_ipv6() -> Result<String, String> {
-    let script = r#"
-        # Obtener todos los adaptadores de red
-        $adapters = Get-NetAdapter
-
-        # Crear una lista para almacenar los resultados
-        $resultados = @()
-
-        foreach ($adapter in $adapters) {
-            # Obtener la configuración IP para cada adaptador (IPv6)
-            $ipConfig = Get-NetIPAddress -InterfaceIndex $adapter.ifIndex -AddressFamily IPv6 | Select-Object -First 1
-
-            # Obtener VLAN ID y estado
-            $vlanID = ($adapter | Get-NetAdapterAdvancedProperty -DisplayName "VLAN ID" -ErrorAction SilentlyContinue).DisplayValue
-            $status = $adapter.Status
-
-            # Obtener puerta de enlace (gateway)
-            $gateway = (Get-NetRoute -InterfaceIndex $adapter.ifIndex -DestinationPrefix '::/0' -ErrorAction SilentlyContinue | 
-                        Select-Object -ExpandProperty NextHop -First 1)
-            if (-not $gateway) { $gateway = "NULL" }
-
-            # Preparar los valores
-            $nombre = $adapter.Name
-            $ip = if ($ipConfig) { $ipConfig.IPAddress } else { "No IP" }
-            $prefixlength = if ($ipConfig) { $ipConfig.PrefixLength } else { "No prefixlength" }
-            $vlan = if ($vlanID) { $vlanID } else { "Null" }
-
-            # Agregar a los resultados
-            $resultados += "$nombre|$ip|$prefixlength|$vlan|$status|$gateway"
-        }
-
-        # Mostrar los resultados
-        Write-Output $resultados
-    "#;
-
-    let output = tauri::async_runtime::spawn_blocking(move || {
-        Command::new("powershell.exe")
-            .args(&["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", script])
+            .args(&[
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-Command",
+                script,
+            ])
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .creation_flags(0x08000000)
@@ -292,7 +242,6 @@ fn cambiar_config_puerto_ipv6(datos: serde_json::Value) -> Result<(), String> {
     let prefixlength = datos["prefixlength"].as_str().unwrap_or("");
     let vlan = datos["vlan"].as_str().unwrap_or("");
     let gateway = datos["getaway"].as_str().unwrap_or("");
-    
 
     println!(
         "Datos enviados: nombre={}, ip={}, prefixlength={}, vlan={}, gateway={}",
@@ -300,7 +249,7 @@ fn cambiar_config_puerto_ipv6(datos: serde_json::Value) -> Result<(), String> {
     );
 
     let script = format!(
-         r#"
+        r#"
         Write-Output "Modificación del puerto: {nombre}"
         Write-Output "Nueva IP: {ip}"
         Write-Output "Nueva Máscara: {prefixlength}"
@@ -450,7 +399,7 @@ fn configurar_puerto_dhcp(nombre: &str) -> Result<(), String> {
 
 //---------- Configurar el puerto seleccionado del ipv6 a dhcp ------------//
 #[tauri::command]
-fn configurar_puerto_dhcp_ipv6(nombre: &str) ->  Result<(), String>{
+fn configurar_puerto_dhcp_ipv6(nombre: &str) -> Result<(), String> {
     println!("Configurando el puerto '{}' en DHCP", nombre);
     let script = format!(
         r#"
@@ -507,7 +456,10 @@ fn configurar_puerto_dhcp_ipv6(nombre: &str) ->  Result<(), String>{
         Ok(())
     } else {
         let error_message = String::from_utf8_lossy(&output.stderr);
-        Err(format!("Error al configurar el puerto en DHCPv6: {}", error_message))
+        Err(format!(
+            "Error al configurar el puerto en DHCPv6: {}",
+            error_message
+        ))
     }
 }
 
@@ -545,36 +497,36 @@ fn validar_ipv6(ip: String) -> bool {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_single_instance::init(|app, _event, _payload| {
-            if let Some(main_window) = app.get_webview_window("main") {
-                match main_window.is_minimized() {
-                    Ok(is_minimized) => {
-                        if is_minimized {
-                            let _ = main_window.unminimize();
+        .plugin(tauri_plugin_single_instance::init(
+            |app, _event, _payload| {
+                if let Some(main_window) = app.get_webview_window("main") {
+                    match main_window.is_minimized() {
+                        Ok(is_minimized) => {
+                            if is_minimized {
+                                let _ = main_window.unminimize();
+                            }
+                            let _ = main_window.show();
+                            let _ = main_window.set_focus();
                         }
-                        let _ = main_window.show();
-                        let _ = main_window.set_focus();
-                    }
-                    Err(e) => {
-                        eprintln!("Error al verificar si la ventana está minimizada: {:?}", e);
+                        Err(e) => {
+                            eprintln!("Error al verificar si la ventana está minimizada: {:?}", e);
+                        }
                     }
                 }
-            }
-        }))
+            },
+        ))
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
-            ejecutar_powershell, 
-            cambiar_config_puerto, 
-            configurar_puerto_dhcp, 
+            ejecutar_powershell,
+            cambiar_config_puerto,
+            configurar_puerto_dhcp,
             get_username,
             tomar_datos_ipv6,
             cambiar_config_puerto_ipv6,
             configurar_puerto_dhcp_ipv6,
             validar_ipv4,
             validar_ipv6
-            ])
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
-
-

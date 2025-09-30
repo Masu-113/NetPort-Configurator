@@ -278,7 +278,11 @@ async function displayUsername() {
       const username = response[0];
       const isAdmin = response[1];
 
-
+    }
+  } catch (e){
+    console.error("Error al obtener el nombre de usuario: ", e);
+  }
+} 
 // ------------ Acciones de los botones ---------- //
 document.addEventListener("DOMContentLoaded", () => {
   const btnAplicarCambios = document.querySelector("#btn-configurar-dhcp");
