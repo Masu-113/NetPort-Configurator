@@ -25,8 +25,8 @@
         <nav class="nav-menu" id="nav-menu">
             <ul class="nav-list" id="nav-list">
                 <li><h4 id="username"></h4></li>
-                <li><a href="javascript:void(0);" class="nav-link" data-page="../Conf_Ipv4/index.html"><i class="fas fa-cog"></i> Configurar Ipv4</a></li>
-                <li><a href="javascript:void(0);" class="nav-link" data-page="../Conf_Ipv6/index.html"><i class="fas fa-cog"></i> Configurar Ipv6</a></li>
+                <li><a href="javascript:void(0);" class="nav-link" data-page="../Conf_Ipv4/index.html"><i class="fas fa-network-wired"></i> Configurar Ipv4</a></li>
+                <li><a href="javascript:void(0);" class="nav-link" data-page="../Conf_Ipv6/index.html"><i class="fas fa-network-wired"></i> Configurar Ipv6</a></li>
                 <li><a href="javascript:void(0);" class="nav-link" data-page="../home/about.html"><i class="fas fa-info-circle"></i> Acerca de</a></li>          
                 <label class="darkModeToggle">
                     <input type="checkbox" id="darkModeToggle" />
@@ -61,6 +61,11 @@
                 .then(data => {
                     const mainContent = document.getElementById('main-content');
                     mainContent.innerHTML = data;
+
+                    // --- Esto reaplica el modo oscuro a las vistas cargadas ---
+                    if (window.aplicarModoOscuro) {
+                    window.aplicarModoOscuro();
+                    }
 
                     // --- Detectar la carpeta base de la vista cargada ---
                     const basePath = page.substring(0, page.lastIndexOf("/")); 

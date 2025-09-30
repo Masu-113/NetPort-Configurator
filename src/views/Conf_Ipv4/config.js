@@ -52,10 +52,10 @@ async function cargarDatos() {
       // Evita que la funcion buscar se ejecute si se utiliza al btn-editar
       btnEditar.onclick = (event) => {
         event.stopPropagation();
-        /*if (!window.isAdmin) {
+        if (!window.isAdmin) {
           mostrarNotificacion("No tienes privilegios necesarios para editar.", "error");
           return;
-        }*/
+        }
         editarPuerto(nombre, ip, mask, vlan, status, getaway);
       };
 

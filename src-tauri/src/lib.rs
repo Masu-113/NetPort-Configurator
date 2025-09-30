@@ -398,19 +398,27 @@ fn configurar_puerto_dhcp_ipv6(nombre: &str) ->  Result<(), String>{
             $adapter = Get-NetAdapter -Name "{nombre}" -ErrorAction Stop
 
             #Ellimar rutas de puerta de enlace existentes del ipv6
-            $routes = Get-NetRoute -InterfaceAlias $adapter.Name -ErrorAction SilentlyContinue | Where-Objet {{ $_.DestinationPrefix -eq "::/0"}}
+            $routes = Get-NetRoute -InterfaceAlias $adapter.Name -ErrorAction SilentlyContinue | Where-Object {{ $_.DestinationPrefix -eq "::/0"}}
             foreach ($route in $routes){{
                 Remove-NetRoute -InterfaceAlias $adapter.Name -DestinationPrefix $route.DestinationPrefix -NextHop $route.NextHop -Confirm:$false
             }}
 
             #configurar el adaptador para activar el dhcp
-            Set-NetIPInterface -InterfaceAlias $adapter.Name -Dhcp Enabled
-
-
+            Disable-NetAdapterBinding -Name $adapter.Name -ComponentID ms_tcpip6
+            Start-Sleep -Seconds 5
+            Enable-NetAdapterBinding -Name $adapter.Name -ComponentID ms_tcpip6
 
             # Configurar DNS automatico para Ipv6
-            Set-DnsClienteServerAddress  -InterfaceAlias $adapter.Name -ResetServerAddresses
-            cmd.exe /c "netsh interface ipv6 set address name=""{nombre}"" auto"
+            Set-DnsClientServerAddress  -InterfaceAlias $adapter.Name -ResetServerAddresses
+
+            # Resetear VLAN (si está configurada)
+            $vlanProp = Get-NetAdapterAdvancedProperty -Name $adapter.Name -ErrorAction SilentlyContinue | Where-Object {{ $_.DisplayName -match "VLAN" }}
+            if ($vlanProp) {{
+                Set-NetAdapterAdvancedProperty -Name $adapter.Name -DisplayName $vlanProp.DisplayName -DisplayValue "0"
+                Write-Output "La VLAN del adaptador '{nombre}' fue restablecida a 0 (sin VLAN)."
+            }} else {{
+                Write-Output "El adaptador '{nombre}' no tiene VLAN asignada."
+            }}
 
             Write-Output "El adapatdor '{nombre}' ha sido configurado correctamente para el DHCP del ipv6."
         }} catch {{

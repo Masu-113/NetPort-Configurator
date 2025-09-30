@@ -50,10 +50,10 @@ async function cargarDatosIpv6() {
       // Evita que la funcion buscar se ejecute si se utiliza al btn-editar
       btnEditar.onclick = (event) => {
         event.stopPropagation();
-        /*if (!window.isAdmin) {
+        if (!window.isAdmin) {
           mostrarNotificacion("No tienes privilegios necesarios para editar.", "error");
           return;
-        }*/
+        }
         editarPuerto(nombre, ip, mask, vlan, status, gateway);
       };
 
@@ -219,7 +219,7 @@ async function configurarPuertoADHCP() {
   const nombre = document.querySelector("#edit-nombre").value;
 
   try {
-    const resultado = await invoke('configurar_puerto_dhcp', { nombre });
+    const resultado = await invoke('configurar_puerto_dhcp_ipv6', { nombre });
     mostrarNotificacion("Se modifico el puerto a DHCP.", "success");
   } catch (error) {
     console.error("Error al configurar el puerto:", error);

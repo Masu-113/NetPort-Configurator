@@ -64,9 +64,28 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// -------- funcion para el modo oscuro -------- //
+//---------- Funcion para aplicar el modo oscuro ----------//
+function aplicarModoOscuro() {
+  if (localStorage.getItem('dark-mode') === 'enabled') {
+    document.body.classList.add('dark-mode');
+    document.querySelector('.sidebar').classList.add('dark-mode');
+    document.querySelectorAll('.nav-list li a').forEach(link => link.classList.add('dark-mode'));
+    document.querySelectorAll('.card').forEach(card => card.classList.add('dark-mode'));
+    document.querySelectorAll('.flex-row input').forEach(input => input.classList.add('dark-mode'));
+    document.querySelectorAll('.btn-buscar, #btn-aplicar-cambios, #btn-configurar-dhcp, .btn-editar, #logo').forEach(btn => btn.classList.add('dark-mode'));
+    document.querySelectorAll('.notification').forEach(notification => notification.classList.add('dark-mode'));
+    document.querySelector('.footer').classList.add('dark-mode');
+
+    const toggleButton = document.getElementById('darkModeToggle');
+    if (toggleButton) toggleButton.checked = true;
+  }
+}
+
+// -------- funcion para el toggle del modo oscuro -------- //
 document.addEventListener('DOMContentLoaded', () => {
     const toggleButton = document.getElementById('darkModeToggle');
+
+    aplicarModoOscuro();
 
     // Comprobar el estado del modo oscuro en localStorage
     if (localStorage.getItem('dark-mode') === 'enabled') {
@@ -100,3 +119,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+window.aplicarModoOscuro = aplicarModoOscuro;
