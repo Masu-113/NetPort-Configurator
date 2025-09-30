@@ -25,6 +25,11 @@ async function cargarDatos() {
       // Evita que la funcion buscar se ejecute si se utiliza al btn-editar
       btnEditar.onclick = (event) => {
         event.stopPropagation();
+        if(!window.isAdmin){
+          mostrarNotificacion("No tienes privilegios necesarios para editar.", "error");
+          return;
+        }
+          
         editarPuerto(nombre, ip, mask, vlan, status, getaway);
       };
 
@@ -232,7 +237,33 @@ function debounce(func, wait){
     }, wait);
   }
 }
+// ---------- Funcion para obtener usuario ---------- //
+async function displayUsername() {
+  try{
+    const response = await invoke("get_username");
+    
+    if (response && response.length === 2){
+      const username = response[0];
+      const isAdmin = response[1];
 
+      document.getElementById("username").innerText = `Bienvenido, ${username}!`;
+
+      window.isAdmin = isAdmin;
+
+      const btnEditar = document.querySelectorAll('.btn-editar');
+      btnEditar.forEach(btn => {
+        btn.disabled = !isAdmin;
+        btn.title = !isAdmin ? "No tienes privilegios necesarios" : "";
+      });
+    } else {
+      console.error("Respuesta inesperada al obtener el nombre de usuario: ", response);
+    }
+  } catch (e) {
+    console.error("Error al obtener el nombre de usuario: ", e);
+  }
+}
+
+window.onload = displayUsername;
 // ------------------------ Acciones de los botones ------------------------------- //
 document.addEventListener("DOMContentLoaded", () => {
   const btnAplicarCambios = document.querySelector("#btn-configurar-dhcp");

@@ -2,6 +2,7 @@
 use std::os::windows::process::CommandExt;
 use std::process::{Command, Stdio};
 use tauri::Manager;
+use std::env;
 
 #[tauri::command]
 async fn ejecutar_powershell() -> Result<String, String> {
@@ -228,22 +229,50 @@ fn configurar_puerto_dhcp(nombre: &str) -> Result<(), String> {
     }
 }
 
+#[tauri::command]
+fn get_username() -> (String, bool) {
+    let username = env::var("USER")
+        .or_else(|_| env::var("USERNAME"))
+        .unwrap_or_else(|_| "unknown".to_string());
+
+    // Verificación de privilegios de administrador en Windows
+    let is_admin = Command::new("net")
+        .arg("session")
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .creation_flags(0x08000000)
+        .output()
+        .map(|output| output.status.success()) // Verifica si el comando se ejecutó con éxito
+        .unwrap_or(false);
+
+    (username, is_admin)
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|app, _event, _payload| {
-            // Intenta obtener la ventana principal
             if let Some(main_window) = app.get_webview_window("main") {
-                // Restaura la ventana si está minimizada
-                let _ = main_window.show();
-                let _ = main_window.set_focus();
+                match main_window.is_minimized() {
+                    Ok(is_minimized) => {
+                        if is_minimized {
+                            let _ = main_window.unminimize();
+                        }
+                        let _ = main_window.show();
+                        let _ = main_window.set_focus();
+                    }
+                    Err(e) => {
+                        eprintln!("Error al verificar si la ventana está minimizada: {:?}", e);
+                    }
+                }
             }
         }))
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             ejecutar_powershell,
             cambiar_config_puerto,
-            configurar_puerto_dhcp
+            configurar_puerto_dhcp,
+            get_username
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
