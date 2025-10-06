@@ -497,24 +497,22 @@ fn validar_ipv6(ip: String) -> bool {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_single_instance::init(
-            |app, _event, _payload| {
-                if let Some(main_window) = app.get_webview_window("main") {
-                    match main_window.is_minimized() {
-                        Ok(is_minimized) => {
-                            if is_minimized {
-                                let _ = main_window.unminimize();
-                            }
-                            let _ = main_window.show();
-                            let _ = main_window.set_focus();
+        .plugin(tauri_plugin_single_instance::init(|app, _event, _payload| {
+            if let Some(main_window) = app.get_webview_window("main") {
+                match main_window.is_minimized() {
+                    Ok(is_minimized) => {
+                        if is_minimized {
+                            let _ = main_window.unminimize();
                         }
-                        Err(e) => {
-                            eprintln!("Error al verificar si la ventana está minimizada: {:?}", e);
-                        }
+                        let _ = main_window.show();
+                        let _ = main_window.set_focus();
+                    }
+                    Err(e) => {
+                        eprintln!("Error al verificar si la ventana está minimizada: {:?}", e);
                     }
                 }
-            },
-        ))
+            }
+        }))
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             ejecutar_powershell,
