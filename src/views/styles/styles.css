@@ -34,13 +34,16 @@ body #fondo {
 }
 
 .footer{
+  padding: 20px;
   margin-top: 20px;
-  font-size: 20px;
-  color: #000000;
+  font-size: 14px;
+  text-align: center;
+  color: var(--text-light);
   position: relative;
   width: 100%;
   height: auto;
-  display: flex;
+  display: grid;
+  border-top: 1px solid #515151;
   justify-content: center;
 }
 
@@ -112,20 +115,7 @@ body #fondo {
   width: 65px;
 }
 
-.footer{
-  padding: 20px;
-  text-align: center;
-  font-size: 14px;
-  color: var(--text-light);
-  color: #000000;
-  border-top: 1px solid #515151;
-  display:grid;
-  align-items: center;
-}
 
-footer a{
-  margin-left: 8px;
-}
 
 .sidebar .header{
   display: flex;
