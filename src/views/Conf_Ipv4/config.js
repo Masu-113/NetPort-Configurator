@@ -1,4 +1,8 @@
 const { invoke } = window.__TAURI__.core;
+import { load } from '@tauri-apps/plugin-store'
+
+//crea un nuevo store o carga si existe uno.
+const store = await load('store.json', { autosave: false});
 
 // --------- Esta funcion hace que se carga la funcionalidad junto con la vista en el layout -------- //
 export function init() {
