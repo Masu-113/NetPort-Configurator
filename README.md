@@ -5,6 +5,8 @@
 
 ---
 
+---
+
 <h1 align="center">NetPort Configurator</h1>
 
 <p align="center">
@@ -28,6 +30,23 @@
 
 ---
 
+## Tabla de contenido
+
+1. [Introducción](#netport-configurator)
+2. [Características](#características)
+3. [Requisitos previos](#requisitos-previos)
+4. [Instalación para desarrollo](#instalación-para-desarrollo)
+5. [Modificar Iconos de la Aplicación](#modificar-iconos-de-la-aplicacion)
+6. [Recomendaciones de uso](#recomendaciones-de-uso)
+7. [Compilación para distribución](#compilación-para-distribución)
+8. [Instaladores](#instaladores)
+9. [Notas sobre la aplicación](#notas-sobre-la-aplicacion)
+10. [Estructura del Proyecto](#estructura-del-proyecto)
+11. [Changelog](#changelog)
+11. [Creditos](#creditos)
+
+---
+
 ## Enlace a la documentación
 
 Para obtener información completa sobre el uso, instalación y características de la aplicación, visita nuestra página de documentación: [NetPort Configurator Documentation](https://masu-113.github.io/).
@@ -41,6 +60,7 @@ Para obtener información completa sobre el uso, instalación y características
 
 ---
 
+## Características
 ## Características
 
 - Visualización de puertos de red disponibles.
