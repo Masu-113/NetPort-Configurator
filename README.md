@@ -19,10 +19,6 @@
   <a href="https://tauri.app/start/" target="_blank">
     <img src="https://img.shields.io/badge/Tauri-v2.x-orange?style=flat-square" alt="Tauri v2">
   </a>
-
-  <a href="https://github.com/Masu-113/NetPort-Configurator/blob/main/LICENSE" target="_blank">
-    <img src="https://img.shields.io/badge/Licencia-MSPL-1.0-green?style=flat-square" alt="Licencia">
-  </a>
   <img src="https://img.shields.io/badge/Estado-En%20Desarrollo-yellow?style=flat-square" alt="Estado">
 </p>
 
