@@ -42,19 +42,19 @@
                                     <input type="text" id="edit-nombre" class="input" readonly>
                                     <span class="heightlight"></span>
                                     <span class="bar"></span>
-                                    <label>Nombre del Puerto</label>
+                                    <label for="edit-nombre">Nombre del Puerto</label>
                                 </div>
                                 <div class="group">
                                     <input type="text" id="edit-ip" class="input">
                                     <span class="heightlight"></span>
                                     <span class="bar"></span>
-                                    <label>Dirección IP</label>
+                                    <label for="edit-ip">Dirección IP</label>
                                 </div>
                                 <div class="group">
                                     <input type="text" id="edit-mask" class="input">
                                     <span class="heightlight"></span>
                                     <span class="bar"></span>
-                                    <label>Máscara de Subred</label>  
+                                    <label for="edit-mask">Máscara de Subred</label>  
                                 </div>
                             </div>
                             <div class="column">
@@ -62,31 +62,43 @@
                                     <input type="text" id="edit-vlan" class="input">
                                     <span class="heightlight"></span>
                                     <span class="bar"></span>
-                                    <label>Vlan Id</label>
+                                    <label for="edit-vlan">Vlan Id</label>
                                 </div>
                                 <div class="group">
                                     <input type="text" id="edit-status" class="input" readonly>
                                     <span class="heightlight"></span>
                                     <span class="bar"></span>
-                                    <label>Estado</label>
+                                    <label for="edit-status">Estado</label>
                                 </div> 
                                 <div class="group">
                                     <input type="text" id="edit-puerta-enlace" class="input">
                                     <span class="heightlight"></span>
                                     <span class="bar"></span>
-                                    <label>Puerta de Enlace</label>
+                                    <label for="edit-puerta-enlace">Puerta de Enlace</label>
                                 </div> 
                             </div>
                         </div>
                         <div class="flex-row">
                             <button type="button" id="btn-aplicar-cambios" class="btn btn-primary">Aplicar Cambios</button>
                             <button type="button" id="btn-configurar-dhcp" class="btn btn-warning">Configurar a DHCP</button>
-                            <button type="button" id="btn-guardar-conf" class="btn btn-warning"><i class="fas fa-star"></i></button>
+                            <button type="button" id="abrirVentanaSecundaria">boton</i></button>
                         </div>
+
+                        
+
                     </div>
+                   
                 </div>
             </form>
         </main>
     </section>
+
+    <script>
+        //const { appWindow } = require('@tauri-apps/api/window');
+
+        document.getElementById('abrirVentanaSecundaria').addEventListener('click', () => {
+            appWindow.getWindow('ventana_secundaria').show();
+        });
+    </script>
 </body>
 </html>

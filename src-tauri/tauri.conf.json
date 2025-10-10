@@ -17,6 +17,13 @@
         "resizable": true,
         "fullscreen": false,
         "visible": true
+      },
+      {
+        "label": "ventana_secundaria",
+        "url":"views/Conf_Ipv4/index.html",
+        "visible": true,
+        "decorations": true,
+        "title": "titulo"
       }
     ],
     "security": {

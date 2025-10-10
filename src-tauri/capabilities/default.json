@@ -9,5 +9,9 @@
     "core:default",
     "opener:default",
     "store:default"
+  ],
+  "permissions extra": [
+    "core:window:default",
+    "core:window:allow-start-dragging"
   ]
 }
