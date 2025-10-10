@@ -21,7 +21,7 @@
   </a>
 
   <a href="https://github.com/Masu-113/NetPort-Configurator/blob/main/LICENSE" target="_blank">
-    <img src="https://img.shields.io/badge/Licencia-MIT-green?style=flat-square" alt="Licencia">
+    <img src="https://img.shields.io/badge/Licencia-MSPL-1.0-green?style=flat-square" alt="Licencia">
   </a>
   <img src="https://img.shields.io/badge/Estado-En%20Desarrollo-yellow?style=flat-square" alt="Estado">
 </p>
@@ -36,7 +36,7 @@ Para obtener información completa sobre el uso, instalación y características
 
 ## Estado del proyecto
 
-- **Licencia**: [MIT](https://github.com/Masu-113/NetPort-Configurator#)
+- **Licencia**: [Licencia de Propietario](https://github.com/Masu-113/NetPort-Configurator/blob/main/LICENSE)
 - **Estado**: En desarrollo
 
 ---
